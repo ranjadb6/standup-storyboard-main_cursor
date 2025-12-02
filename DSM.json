@@ -1,0 +1,112 @@
+{
+  "planning": [
+    {
+      "id": "7f639fee-2c7c-4dd1-90b9-06432d119d50",
+      "adoId": "",
+      "taskName": "",
+      "status": "Not Started",
+      "collaborators": [],
+      "DevStartDate": null,
+      "DevDueDate": "2025-12-02T18:30:00.000Z",
+      "QAStartDate": null,
+      "QAEndDate": null,
+      "remarks": "[December 2nd, 2025 2:04 PM] : Dev Due Date added as December 3rd, 2025",
+      "committedDate": null
+    },
+    {
+      "id": "4c28899f-8394-455c-b274-16258571bc4e",
+      "adoId": "",
+      "taskName": "",
+      "status": "Not Started",
+      "collaborators": [],
+      "DevStartDate": null,
+      "DevDueDate": null,
+      "QAStartDate": null,
+      "QAEndDate": null,
+      "remarks": "",
+      "committedDate": null
+    },
+    {
+      "id": "487d431d-2795-4850-a4b0-d685e068dba0",
+      "adoId": "",
+      "taskName": "",
+      "status": "Not Started",
+      "collaborators": [],
+      "DevStartDate": null,
+      "DevDueDate": null,
+      "QAStartDate": null,
+      "QAEndDate": null,
+      "remarks": "",
+      "committedDate": null
+    }
+  ],
+  "devQa": [
+    {
+      "id": "7526fd33-209f-4a1c-874b-c07348571f6e",
+      "adoId": "484286",
+      "taskName": "",
+      "status": "In Solutioning",
+      "collaborators": [],
+      "DevStartDate": "2025-12-02T18:30:00.000Z",
+      "DevDueDate": null,
+      "QAStartDate": null,
+      "QAEndDate": null,
+      "remarks": "[December 2nd, 2025 1:59 PM] : Dev Start Date changes from December 2nd, 2025 to December 3rd, 2025 due to Reason : delayed\n\n[December 2nd, 2025 1:59 PM] : Dev Start Date added as December 2nd, 2025\n[November 30th, 2025 2:12 PM] : Committed date changed from December 30th, 2025 to December 4th, 2025 with Reason : ewdew\n[November 30th, 2025 2:11 PM] : Committed date changed from November 21st, 2025 to December 30th, 2025 with Reason : we\n[November 30th, 2025 2:11 PM] : dev Due Date changes from November 19th, 2025 to December 1st, 2025 due to Reason : test1\n\n[November 30th, 2025 2:10 PM] : dev Start Date changes from November 17th, 2025 to November 18th, 2025 due to Reason : Test\n[November 18th, 2025 9:32 AM] : Committed Date added with November 21st, 2025\n[November 18th, 2025 9:32 AM] : dev Due Date changes from November 18th, 2025 to November 19th, 2025 due to Reason : ee\n[November 18th, 2025 9:31 AM] : dev Due Date changes from November 19th, 2025 to November 18th, 2025 due to Reason : Because of a feature xxx impacting hence extending\n[November 18th, 2025 9:29 AM] : dev Due Date added with November 19th, 2025\n[November 17th, 2025 6:07 PM] : dev Start Date added with November 17th, 2025",
+      "committedDate": "2025-12-03T18:30:00.000Z"
+    },
+    {
+      "id": "a4d5721b-7194-4384-864c-ef5c47bcc2b6",
+      "adoId": "",
+      "taskName": "",
+      "status": "Not Started",
+      "collaborators": [],
+      "DevStartDate": null,
+      "DevDueDate": null,
+      "QAStartDate": null,
+      "QAEndDate": null,
+      "remarks": "",
+      "committedDate": null
+    }
+  ],
+  "prod": [
+    {
+      "id": "80eaf2c5-b286-4b60-84e1-b82046ece296",
+      "adoId": "",
+      "taskName": "",
+      "status": "Not Started",
+      "collaborators": [],
+      "DevStartDate": null,
+      "DevDueDate": null,
+      "QAStartDate": null,
+      "QAEndDate": null,
+      "remarks": "",
+      "committedDate": null
+    },
+    {
+      "id": "b95aeb73-dfd9-4a31-aaf2-a9fdb6b16c7b",
+      "adoId": "",
+      "taskName": "",
+      "status": "Not Started",
+      "collaborators": [],
+      "DevStartDate": null,
+      "DevDueDate": null,
+      "QAStartDate": null,
+      "QAEndDate": null,
+      "remarks": "",
+      "committedDate": null
+    }
+  ],
+  "release": [
+    {
+      "id": "c7aaa013-98b2-495e-bdcc-b2351b9a768d",
+      "item": "",
+      "status": [],
+      "crLink": "",
+      "jmdbId": "",
+      "services": [],
+      "remarks": "",
+      "committedDate": null
+    }
+  ],
+  "meetingNotes": "<p>test 123</p>"
+}
