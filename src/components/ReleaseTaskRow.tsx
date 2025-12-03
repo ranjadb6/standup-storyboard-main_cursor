@@ -71,7 +71,15 @@ const ServicesMultiSelect = ({
 };
 
 export const ReleaseTaskRow = ({ task, onUpdate, onDelete, columnWidths }: ReleaseTaskRowProps) => {
+  const itemRef = useRef<HTMLTextAreaElement>(null);
   const remarksRef = useRef<HTMLTextAreaElement>(null);
+
+  useLayoutEffect(() => {
+    if (itemRef.current) {
+      itemRef.current.style.height = "auto";
+      itemRef.current.style.height = `${itemRef.current.scrollHeight}px`;
+    }
+  }, [task.item]);
 
   useLayoutEffect(() => {
     if (remarksRef.current) {
@@ -212,11 +220,12 @@ export const ReleaseTaskRow = ({ task, onUpdate, onDelete, columnWidths }: Relea
           {/* Feature / Item */}
           <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.item }}>
             <textarea
+              ref={itemRef}
               value={task.item}
               onChange={(e) => onUpdate(task.id, { item: e.target.value })}
-              className="w-full min-h-[36px] px-3 py-2 text-sm rounded-md border-0 bg-transparent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
+              className="w-full min-h-[36px] px-3 py-2 text-sm rounded-md border-0 bg-transparent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none overflow-hidden"
               placeholder="Enter feature name..."
-              rows={3}
+              rows={1}
             />
           </div>
 

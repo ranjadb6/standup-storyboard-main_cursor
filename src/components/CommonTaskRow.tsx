@@ -34,7 +34,15 @@ interface CommonTaskRowProps {
 }
 
 export const CommonTaskRow = ({ task, onUpdate, onDelete, columnWidths }: CommonTaskRowProps) => {
+  const taskNameRef = useRef<HTMLTextAreaElement>(null);
   const remarksRef = useRef<HTMLTextAreaElement>(null);
+
+  useLayoutEffect(() => {
+    if (taskNameRef.current) {
+      taskNameRef.current.style.height = "auto";
+      taskNameRef.current.style.height = `${taskNameRef.current.scrollHeight}px`;
+    }
+  }, [task.taskName]);
 
   useLayoutEffect(() => {
     if (remarksRef.current) {
@@ -237,11 +245,12 @@ export const CommonTaskRow = ({ task, onUpdate, onDelete, columnWidths }: Common
           {/* Task Name */}
           <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.taskName }}>
             <textarea
+              ref={taskNameRef}
               value={task.taskName}
               onChange={(e) => onUpdate(task.id, { taskName: e.target.value })}
-              className="w-full min-h-[36px] px-3 py-2 text-sm rounded-md border-0 bg-transparent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
+              className="w-full min-h-[36px] px-3 py-2 text-sm rounded-md border-0 bg-transparent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none overflow-hidden"
               placeholder="Enter task name..."
-              rows={3}
+              rows={1}
             />
           </div>
 
