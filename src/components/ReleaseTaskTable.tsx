@@ -46,6 +46,7 @@ export const ReleaseTaskTable = ({
   onReorder,
 }: ReleaseTaskTableProps) => {
   const defaultWidths = {
+    adoId: 120,
     item: 200,
     status: 200,
     crLink: 180,
@@ -144,6 +145,7 @@ export const ReleaseTaskTable = ({
             {/* Header */}
             <div className="flex border-b bg-muted/30 text-xs font-medium text-muted-foreground">
               <div className="w-8 px-2 py-3 border-r border-black/20 shrink-0"></div> {/* Drag handle column */}
+              <ResizableHeader title="ADO ID" width={columnWidths.adoId} onResize={handleResize("adoId")} className="border-r border-black/20" />
               <ResizableHeader title="Feature" width={columnWidths.item} onResize={handleResize("item")} className="border-r border-black/20" />
               <ResizableHeader title="Status" width={columnWidths.status} onResize={handleResize("status")} className="border-r border-black/20" />
               <ResizableHeader title="CR Link" width={columnWidths.crLink} onResize={handleResize("crLink")} className="border-r border-black/20" />

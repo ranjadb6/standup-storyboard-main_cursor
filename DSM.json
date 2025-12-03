@@ -1,89 +1,60 @@
 {
-  "planning": [
-    {
-      "id": "7f639fee-2c7c-4dd1-90b9-06432d119d50",
-      "adoId": "",
-      "taskName": "",
-      "status": "Not Started",
-      "collaborators": [],
-      "DevStartDate": null,
-      "DevDueDate": "2025-12-02T18:30:00.000Z",
-      "QAStartDate": null,
-      "QAEndDate": null,
-      "remarks": "[December 2nd, 2025 2:04 PM] : Dev Due Date added as December 3rd, 2025",
-      "committedDate": null
-    },
-    {
-      "id": "4c28899f-8394-455c-b274-16258571bc4e",
-      "adoId": "",
-      "taskName": "",
-      "status": "Not Started",
-      "collaborators": [],
-      "DevStartDate": null,
-      "DevDueDate": null,
-      "QAStartDate": null,
-      "QAEndDate": null,
-      "remarks": "",
-      "committedDate": null
-    },
-    {
-      "id": "487d431d-2795-4850-a4b0-d685e068dba0",
-      "adoId": "",
-      "taskName": "",
-      "status": "Not Started",
-      "collaborators": [],
-      "DevStartDate": null,
-      "DevDueDate": null,
-      "QAStartDate": null,
-      "QAEndDate": null,
-      "remarks": "",
-      "committedDate": null
-    }
-  ],
+  "planning": [],
   "devQa": [
     {
-      "id": "7526fd33-209f-4a1c-874b-c07348571f6e",
-      "adoId": "484286",
-      "taskName": "",
-      "status": "In Solutioning",
-      "collaborators": [],
-      "DevStartDate": "2025-12-02T18:30:00.000Z",
-      "DevDueDate": null,
-      "QAStartDate": null,
-      "QAEndDate": null,
-      "remarks": "[December 2nd, 2025 1:59 PM] : Dev Start Date changes from December 2nd, 2025 to December 3rd, 2025 due to Reason : delayed\n\n[December 2nd, 2025 1:59 PM] : Dev Start Date added as December 2nd, 2025\n[November 30th, 2025 2:12 PM] : Committed date changed from December 30th, 2025 to December 4th, 2025 with Reason : ewdew\n[November 30th, 2025 2:11 PM] : Committed date changed from November 21st, 2025 to December 30th, 2025 with Reason : we\n[November 30th, 2025 2:11 PM] : dev Due Date changes from November 19th, 2025 to December 1st, 2025 due to Reason : test1\n\n[November 30th, 2025 2:10 PM] : dev Start Date changes from November 17th, 2025 to November 18th, 2025 due to Reason : Test\n[November 18th, 2025 9:32 AM] : Committed Date added with November 21st, 2025\n[November 18th, 2025 9:32 AM] : dev Due Date changes from November 18th, 2025 to November 19th, 2025 due to Reason : ee\n[November 18th, 2025 9:31 AM] : dev Due Date changes from November 19th, 2025 to November 18th, 2025 due to Reason : Because of a feature xxx impacting hence extending\n[November 18th, 2025 9:29 AM] : dev Due Date added with November 19th, 2025\n[November 17th, 2025 6:07 PM] : dev Start Date added with November 17th, 2025",
-      "committedDate": "2025-12-03T18:30:00.000Z"
+      "id": "c786ad40-9a85-45dc-879d-0511b2f91102",
+      "adoId": "",
+      "taskName": "Feature 484303: JMD - ASP - Post-Invoice IMEI Validation Service",
+      "status": "QA In Progress",
+      "collaborators": [
+        "Kamlesh",
+        "Suresh",
+        "Sunderrajan",
+        "Suraj"
+      ],
+      "DevStartDate": "2025-11-20T18:30:00.000Z",
+      "DevDueDate": "2025-11-30T18:30:00.000Z",
+      "QAStartDate": "2025-12-01T18:30:00.000Z",
+      "QAEndDate": "2025-12-08T18:30:00.000Z",
+      "remarks": "2nd Dec:\nQA will start on 2nd Dec.\nPub-Sub Enhancement - SRE suggestion - Kamlesh \nProduction Infra for this feature - Kamlesh/Suraj/Soumyajit\n\na.Report to be created for success and failure - Sunderrajan\n\nb.File upload experience - Sunder / Kamlesh/ Suresh ( pr-1)- folder will be created and access will be given to business to CSV upload\n”IMEI validation” is name of folder\n———————————————————————————————\n28-Nov\nWe will focus on 1-Dec 2nd half for QA demo date. QA completion is 9th-Dec.  so we will release on Dec 10th if no blockers. \n——————————————————————————————\n27-Nov:\n1. Changed the timelines advanced by 1 day [subjected to change if further delay happens] due to delay in data readiness.\n2. JioOnePay staus polling call implementation - Kamlesh to give input - estimations awaited\n\nPending 26-Nov:\n\n1. Sundarrajan M please share the ETA for  query optimisation\n2. Kamlesh Mathe is verifying the payload and validating the e2e to figure out how much QA support needed ,hence QA meeting is re-scheduled for tomorrow 11AM. \n3. No messages in Topic Sundarrajan M please check without this #2 will be blocked .\n\n    1. \n\nPending items (25-Nov)→\n1.transactionRefNum - ?? backup - Sunderrajan will get data and it will be checked. ETA - 25th Nov \n2. Sunderrajan - IMEI validation response Pub/Sub topic  ETA 25th Nov\n3.  Suresh for Production env  - \nPineLabs:\n• merchant-id\n• merchant-access-code\nJioOnePay:\n• secret\n• merchant-id\n• business-flow\n\n4.Manas to discuss with Soumyajit to give access to  Navneet Shruti and dama  Kamlesh - DONE - 25th Nov\n\nEstimate : Dev 5 days , QA 6 days\n[December 2nd, 2025 4:15 PM] : Committed Date added as December 10th, 2025\n[December 2nd, 2025 4:14 PM] : Q A End Date added as December 9th, 2025\n[December 2nd, 2025 4:13 PM] : Q A Start Date added as December 2nd, 2025\n[December 2nd, 2025 4:13 PM] : Dev Due Date added as December 1st, 2025\n[December 2nd, 2025 4:13 PM] : Dev Start Date added as November 21st, 2025",
+      "committedDate": "2025-12-09T18:30:00.000Z"
     },
     {
-      "id": "a4d5721b-7194-4384-864c-ef5c47bcc2b6",
+      "id": "8695302a-830b-4d4b-a94f-8dc6675a5dd4",
       "adoId": "",
-      "taskName": "",
-      "status": "Not Started",
-      "collaborators": [],
+      "taskName": "Feature 484068: JMD - ASP/B2B - Creating Manual Return on a Delivered Item",
+      "status": "Dev in Progress",
+      "collaborators": [
+        "Malati",
+        "Prasoon"
+      ],
       "DevStartDate": null,
-      "DevDueDate": null,
-      "QAStartDate": null,
-      "QAEndDate": null,
-      "remarks": "",
-      "committedDate": null
+      "DevDueDate": "2025-12-09T18:30:00.000Z",
+      "QAStartDate": "2025-12-10T18:30:00.000Z",
+      "QAEndDate": "2025-12-18T18:30:00.000Z",
+      "remarks": "\nDev delay of 1.5 days due to OrderID prod issue fix in Hogwarts  hence adding 1.5 days from Dec-8 to 10-Dec timeline and moving others accordingly\n———————————————————————————————\n26-Nov:\nBE completion - 5th Dec\nFE Completion - 5th Dec\nIntegration Testing - 1 day - 8th Dec\nQA - 1+6 days - post SWT evaluation\n——————————————————————————-\nBE completion - 5th Dec\nFE Completion - DFD 25th Nov\nIntegration Testing - 1 day - 8th Dec\nQA - 1+6 days - post SWT evaluation\n\n\n\nBall Park estimation . Will confirm once Shruti reviews SWT -DTD 26-Nov\n[December 2nd, 2025 4:23 PM] : Committed Date added as December 24th, 2025\n[December 2nd, 2025 4:22 PM] : Q A End Date added as December 19th, 2025\n[December 2nd, 2025 4:22 PM] : Q A Start Date added as December 11th, 2025\n[December 2nd, 2025 4:22 PM] : Dev Due Date added as December 10th, 2025",
+      "committedDate": "2025-12-23T18:30:00.000Z"
+    },
+    {
+      "id": "01fe04d1-3454-490c-9e0b-5b6b9ee57d3b",
+      "adoId": "",
+      "taskName": "Feature 201058: DMS - JMD - Enable MOQ at Cart level",
+      "status": "QA In Progress",
+      "collaborators": [
+        "Rhishabh",
+        "Devaraj"
+      ],
+      "DevStartDate": "2025-11-24T18:30:00.000Z",
+      "DevDueDate": "2025-11-26T18:30:00.000Z",
+      "QAStartDate": "2025-11-30T18:30:00.000Z",
+      "QAEndDate": "2025-12-02T18:30:00.000Z",
+      "remarks": "\n———————————————————————————————\nDue to Supercoin release MOQ QA demo will be done on 26th Nov but QA can start from 27th Nov instead of 26 Nov so QA due date will be 1-Dec instead of 28-Nov\n\nQA Demo scheduled at 11:30 26th Sept among QA,SRE and Tops\n\nQA demo to be scheduled on 26th 1st half\nDue to supercoin/onboarding  changes FE end date for MOQ will from 20th Nov- 25th Nov\n\n@Rhishabh in meantime will work on alerts for cronjobs.\n\nBased on the discussion with Suresh2 Iyer regarding the approach for Category level MOQ, we will proceed with the Sorting and grouping approach. Pls find the estimate\nstart and end Date -  18th - 21th  \n\nNov - Devraj   - BE is completed - Integration is pending \nSWT 31-Oct 2nd half \nRhisshabh will update 28-Oct for due date\n[December 2nd, 2025 4:25 PM] : Committed Date added as December 4th, 2025\n[December 2nd, 2025 4:25 PM] : Q A End Date added as December 3rd, 2025\n[December 2nd, 2025 4:25 PM] : Q A Start Date added as December 1st, 2025\n[December 2nd, 2025 4:25 PM] : Dev Due Date added as November 27th, 2025\n[December 2nd, 2025 4:25 PM] : Dev Start Date added as November 25th, 2025",
+      "committedDate": "2025-12-03T18:30:00.000Z"
     }
   ],
   "prod": [
     {
-      "id": "80eaf2c5-b286-4b60-84e1-b82046ece296",
-      "adoId": "",
-      "taskName": "",
-      "status": "Not Started",
-      "collaborators": [],
-      "DevStartDate": null,
-      "DevDueDate": null,
-      "QAStartDate": null,
-      "QAEndDate": null,
-      "remarks": "",
-      "committedDate": null
-    },
-    {
-      "id": "b95aeb73-dfd9-4a31-aaf2-a9fdb6b16c7b",
+      "id": "97765241-74cd-40f3-b10c-2feb1e543b2a",
       "adoId": "",
       "taskName": "",
       "status": "Not Started",
@@ -98,14 +69,31 @@
   ],
   "release": [
     {
-      "id": "c7aaa013-98b2-495e-bdcc-b2351b9a768d",
-      "item": "",
-      "status": [],
-      "crLink": "",
-      "jmdbId": "",
-      "services": [],
-      "remarks": "",
-      "committedDate": null
+      "id": "600a912b-0f01-4ae9-860f-86f433513c96",
+      "adoId": "",
+      "item": "Feature 201058: DMS - JMD - Enable MOQ at Cart level",
+      "status": [
+        "CAB Review Pending",
+        "SRE Pending"
+      ],
+      "crLink": "Change Request 242232: Feature 201058: DMS - JMD - Enable MOQ at Cart level",
+      "jmdbId": "JMDB-1025",
+      "services": [
+        "dms-service"
+      ],
+      "remarks": "[December 2nd, 2025 4:36 PM] : Committed Date added as December 3rd, 2025",
+      "committedDate": "2025-12-02T18:30:00.000Z"
+    }
+  ],
+  "rwt": [
+    {
+      "id": "079edee3-d367-46b0-899b-f151a255693a",
+      "feature": "",
+      "status": "RWT Pending",
+      "collaborators": [],
+      "startDate": null,
+      "endDate": null,
+      "remarks": ""
     }
   ],
   "meetingNotes": "<p>test 123</p>"

@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { CommonTask, ReleaseTask, StandupData, EMPTY_STANDUP_DATA } from "@/types/standupTask";
+import { CommonTask, ReleaseTask, RwtTask, StandupData, EMPTY_STANDUP_DATA } from "@/types/standupTask";
 import { CommonTaskTable } from "./CommonTaskTable";
 import { ReleaseTaskTable } from "./ReleaseTaskTable";
+import { RwtTaskTable } from "./RwtTaskTable";
 import { MeetingNotes } from "./MeetingNotes";
 import { DashboardStats } from "./DashboardStats";
 import { Button } from "./ui/button";
@@ -32,6 +33,7 @@ export const StandupTasksUI = () => {
     devQa: true,
     prod: true,
     release: true,
+    rwt: true,
   });
   const [isInitialized, setIsInitialized] = useState(false);
   const [fileConnection, setFileConnection] = useState<{ name: string; directory?: string } | null>(null);
@@ -41,7 +43,7 @@ export const StandupTasksUI = () => {
   const skipNextSaveRef = useRef(false);
   const { toast } = useToast();
 
-  const { planning, devQa, prod, release, meetingNotes } = standupData;
+  const { planning, devQa, prod, release, rwt, meetingNotes } = standupData;
 
   // hydrate + subscribe to external updates
   useEffect(() => {
@@ -115,16 +117,7 @@ export const StandupTasksUI = () => {
     committedDate: null,
   });
 
-  const createReleaseTask = (): ReleaseTask => ({
-    id: crypto.randomUUID(),
-    item: "",
-    status: [],
-    crLink: "",
-    jmdbId: "",
-    services: [],
-    remarks: "",
-    committedDate: null,
-  });
+
 
   const updateCommonTaskSection =
     (section: "planning" | "devQa" | "prod") => (id: string, updates: Partial<CommonTask>) => {
@@ -187,11 +180,71 @@ export const StandupTasksUI = () => {
     }));
   };
 
+  const createReleaseTask = (): ReleaseTask => ({
+    id: crypto.randomUUID(),
+    adoId: "",
+    item: "",
+    status: [],
+    crLink: "",
+    jmdbId: "",
+    services: [],
+    remarks: "",
+    committedDate: null,
+  });
+
+  const createRwtTask = (): RwtTask => ({
+    id: crypto.randomUUID(),
+    feature: "",
+    status: "RWT Pending",
+    collaborators: [],
+    startDate: null,
+    endDate: null,
+    remarks: "",
+  });
+
   const updateReleaseTask = (id: string, updates: Partial<ReleaseTask>) => {
-    setStandupData((prev) => ({
-      ...prev,
-      release: prev.release.map((task) => (task.id === id ? { ...task, ...updates } : task)),
-    }));
+    setStandupData((prev) => {
+      const task = prev.release.find((t) => t.id === id);
+      if (!task) return prev;
+
+      const updatedTask = { ...task, ...updates };
+      const adoId = updatedTask.adoId;
+
+      if (adoId) {
+        const today = new Date().toLocaleDateString("en-GB"); // DD/MM/YYYY
+        let changelog = "";
+
+        if ("crLink" in updates && updates.crLink !== task.crLink) {
+          changelog = `${today} : Added CR Link : - ${updates.crLink}`;
+        } else if ("jmdbId" in updates && updates.jmdbId !== task.jmdbId) {
+          changelog = `${today} : Added JMDB ID : - ${updates.jmdbId}`;
+        } else if ("services" in updates && JSON.stringify(updates.services) !== JSON.stringify(task.services)) {
+          changelog = `${today} : Added Services : - ${updates.services?.join(", ")}`;
+        }
+
+        if (changelog) {
+          postChangelogToAdo(adoId, changelog)
+            .then(() =>
+              toast({
+                title: "Azure DevOps updated",
+                description: `Changelog posted to ${adoId}`,
+              })
+            )
+            .catch((error) =>
+              toast({
+                variant: "destructive",
+                title: `Failed to update ${adoId}`,
+                description: error instanceof Error ? error.message : "Unknown Azure DevOps error",
+              })
+            );
+        }
+      }
+
+      return {
+        ...prev,
+        release: prev.release.map((t) => (t.id === id ? updatedTask : t)),
+      };
+    });
   };
 
   const deleteReleaseTask = (id: string) => {
@@ -212,6 +265,34 @@ export const StandupTasksUI = () => {
     setStandupData((prev) => ({
       ...prev,
       release: arrayMove(prev.release, startIndex, endIndex),
+    }));
+  };
+
+  const updateRwtTask = (id: string, updates: Partial<RwtTask>) => {
+    setStandupData((prev) => ({
+      ...prev,
+      rwt: prev.rwt.map((task) => (task.id === id ? { ...task, ...updates } : task)),
+    }));
+  };
+
+  const deleteRwtTask = (id: string) => {
+    setStandupData((prev) => ({
+      ...prev,
+      rwt: prev.rwt.filter((task) => task.id !== id),
+    }));
+  };
+
+  const addRwtTask = () => {
+    setStandupData((prev) => ({
+      ...prev,
+      rwt: [...prev.rwt, createRwtTask()],
+    }));
+  };
+
+  const reorderRwtTask = (startIndex: number, endIndex: number) => {
+    setStandupData((prev) => ({
+      ...prev,
+      rwt: arrayMove(prev.rwt, startIndex, endIndex),
     }));
   };
 
@@ -244,11 +325,28 @@ export const StandupTasksUI = () => {
 
   const exportReleaseTasksToCSV = (tasks: ReleaseTask[], filename: string) => {
     const data = tasks.map((task) => ({
+      "ADO ID": task.adoId,
       Feature: task.item,
       Status: task.status.join(", "),
       "CR Link": task.crLink,
       "JMDB ID": task.jmdbId,
       Services: task.services.join(", "),
+      Remarks: task.remarks,
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Tasks");
+    XLSX.writeFile(wb, filename);
+  };
+
+  const exportRwtTasksToCSV = (tasks: RwtTask[], filename: string) => {
+    const data = tasks.map((task) => ({
+      Feature: task.feature,
+      Status: task.status,
+      Collaborators: task.collaborators.join(", "),
+      "Start Date": task.startDate ? new Date(task.startDate).toLocaleDateString() : "",
+      "End Date": task.endDate ? new Date(task.endDate).toLocaleDateString() : "",
       Remarks: task.remarks,
     }));
 
@@ -305,6 +403,7 @@ export const StandupTasksUI = () => {
 
     // Planned Release
     const releaseData = release.map((task) => ({
+      "ADO ID": task.adoId,
       Feature: task.item,
       Status: task.status.join(", "),
       "CR Link": task.crLink,
@@ -313,6 +412,17 @@ export const StandupTasksUI = () => {
       Remarks: task.remarks,
     }));
     XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(releaseData), "Planned_Release");
+
+    // Planned RWT
+    const rwtData = rwt.map((task) => ({
+      Feature: task.feature,
+      Status: task.status,
+      Collaborators: task.collaborators.join(", "),
+      "Start Date": task.startDate ? new Date(task.startDate).toLocaleDateString() : "",
+      "End Date": task.endDate ? new Date(task.endDate).toLocaleDateString() : "",
+      Remarks: task.remarks,
+    }));
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rwtData), "Planned_RWT");
 
     // Meeting Notes
     const notesData = [{ "Meeting Notes": meetingNotes.replace(/<[^>]*>/g, "") }];
@@ -496,6 +606,24 @@ export const StandupTasksUI = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
+        >
+          <RwtTaskTable
+            tasks={rwt}
+            onUpdateTask={updateRwtTask}
+            onDelete={deleteRwtTask}
+            onAddTask={addRwtTask}
+            onReorder={reorderRwtTask}
+            onExport={() => exportRwtTasksToCSV(rwt, "Planned_RWT.xlsx")}
+            showOngoingOnly={filters.rwt}
+            onToggleFilter={() => setFilters({ ...filters, rwt: !filters.rwt })}
+            storageKey="rwt"
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
         >
           <MeetingNotes value={meetingNotes} onChange={updateMeetingNotes} />
         </motion.div>

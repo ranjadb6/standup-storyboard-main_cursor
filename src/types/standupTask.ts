@@ -24,6 +24,8 @@ export type ReleaseStatus =
   | "Ready For Release"
   | "Released";
 
+export type RwtStatus = "RWT Pending" | "RWT Completed";
+
 export const COMMON_STATUS_OPTIONS: CommonStatus[] = [
   "Not Started",
   "In Solutioning",
@@ -51,6 +53,8 @@ export const RELEASE_STATUS_OPTIONS: ReleaseStatus[] = [
   "Ready For Release",
   "Released",
 ];
+
+export const RWT_STATUS_OPTIONS: RwtStatus[] = ["RWT Pending", "RWT Completed"];
 
 export const SERVICE_OPTIONS = [
   "ASP - UI",
@@ -87,7 +91,8 @@ export const COLLABORATOR_OPTIONS = [
   "Kamlesh",
   "Prasoon",
   "Suresh",
-  "Shirin",
+  "Suraj",
+  "Sunderrajan",
   "Ganapati",
   "Rhishabh",
   "Amrit",
@@ -97,7 +102,9 @@ export const COLLABORATOR_OPTIONS = [
   "Fynd Team",
   "B Rajesh",
   "Manas",
-  "Devaraj"
+  "Devaraj",
+  "Abhishek"
+
 ];
 
 export interface CommonTask {
@@ -116,6 +123,7 @@ export interface CommonTask {
 
 export interface ReleaseTask {
   id: string;
+  adoId: string;
   item: string;
   status: ReleaseStatus[];
   crLink: string;
@@ -125,11 +133,22 @@ export interface ReleaseTask {
   committedDate: Date | null;
 }
 
+export interface RwtTask {
+  id: string;
+  feature: string;
+  status: RwtStatus;
+  collaborators: string[];
+  startDate: Date | null;
+  endDate: Date | null;
+  remarks: string;
+}
+
 export interface StandupData {
   planning: CommonTask[];
   devQa: CommonTask[];
   prod: CommonTask[];
   release: ReleaseTask[];
+  rwt: RwtTask[];
   meetingNotes: string;
 }
 
@@ -138,6 +157,7 @@ export const EMPTY_STANDUP_DATA: StandupData = {
   devQa: [],
   prod: [],
   release: [],
+  rwt: [],
   meetingNotes: "",
 };
 
@@ -163,6 +183,7 @@ const reviveCommonTask = (task: Partial<CommonTask>): CommonTask => ({
 
 const reviveReleaseTask = (task: Partial<ReleaseTask>): ReleaseTask => ({
   id: task.id ?? crypto.randomUUID(),
+  adoId: task.adoId ?? "",
   item: task.item ?? "",
   status: Array.isArray(task.status) ? (task.status as ReleaseStatus[]) : [],
   crLink: task.crLink ?? "",
@@ -170,6 +191,16 @@ const reviveReleaseTask = (task: Partial<ReleaseTask>): ReleaseTask => ({
   services: Array.isArray(task.services) ? task.services : [],
   remarks: task.remarks ?? "",
   committedDate: reviveDate(task.committedDate),
+});
+
+const reviveRwtTask = (task: Partial<RwtTask>): RwtTask => ({
+  id: task.id ?? crypto.randomUUID(),
+  feature: task.feature ?? "",
+  status: (task.status as RwtStatus) ?? "RWT Pending",
+  collaborators: Array.isArray(task.collaborators) ? task.collaborators : [],
+  startDate: reviveDate(task.startDate),
+  endDate: reviveDate(task.endDate),
+  remarks: task.remarks ?? "",
 });
 
 export const reviveStandupData = (raw?: Partial<StandupData> | null): StandupData => {
@@ -182,6 +213,7 @@ export const reviveStandupData = (raw?: Partial<StandupData> | null): StandupDat
     devQa: (raw.devQa ?? []).map(reviveCommonTask),
     prod: (raw.prod ?? []).map(reviveCommonTask),
     release: (raw.release ?? []).map(reviveReleaseTask),
+    rwt: (raw.rwt ?? []).map(reviveRwtTask),
     meetingNotes: raw.meetingNotes ?? "",
   };
 };

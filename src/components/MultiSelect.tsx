@@ -22,10 +22,16 @@ interface MultiSelectProps {
   onChange: (selected: string[]) => void;
   placeholder?: string;
   getBadgeClassName?: (value: string) => string;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export const MultiSelect = ({ options, selected, onChange, placeholder = "Select collaborators...", getBadgeClassName }: MultiSelectProps) => {
+export const MultiSelect = ({ options, selected, onChange, placeholder = "Select collaborators...", getBadgeClassName, onOpenChange }: MultiSelectProps) => {
   const [open, setOpen] = useState(false);
+
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+    onOpenChange?.(newOpen);
+  };
 
   const handleSelect = (option: string) => {
     if (selected.includes(option)) {
@@ -40,7 +46,7 @@ export const MultiSelect = ({ options, selected, onChange, placeholder = "Select
   };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"

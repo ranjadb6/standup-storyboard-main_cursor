@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useLayoutEffect } from "react";
 import { CommonTask, COMMON_STATUS_OPTIONS, COLLABORATOR_OPTIONS } from "@/types/standupTask";
 import { Badge } from "./ui/badge";
 import { Input } from "./ui/input";
@@ -34,6 +34,15 @@ interface CommonTaskRowProps {
 }
 
 export const CommonTaskRow = ({ task, onUpdate, onDelete, columnWidths }: CommonTaskRowProps) => {
+  const remarksRef = useRef<HTMLTextAreaElement>(null);
+
+  useLayoutEffect(() => {
+    if (remarksRef.current) {
+      remarksRef.current.style.height = "auto";
+      remarksRef.current.style.height = `${remarksRef.current.scrollHeight}px`;
+    }
+  }, [task.remarks]);
+
   const [dateChangeDialog, setDateChangeDialog] = useState<{
     isOpen: boolean;
     field: keyof CommonTask | null;
@@ -303,11 +312,12 @@ export const CommonTaskRow = ({ task, onUpdate, onDelete, columnWidths }: Common
           {/* Remarks */}
           <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.remarks }}>
             <textarea
+              ref={remarksRef}
               value={task.remarks}
               onChange={(e) => onUpdate(task.id, { remarks: e.target.value })}
-              className="w-full min-h-[36px] px-3 py-2 text-sm rounded-md border-0 bg-transparent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
+              className="w-full min-h-[36px] px-3 py-2 text-sm rounded-md border-0 bg-transparent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none overflow-hidden"
               placeholder="Add remarks..."
-              rows={3}
+              rows={1}
             />
           </div>
 

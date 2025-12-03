@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useLayoutEffect } from "react";
 import { ReleaseTask, RELEASE_STATUS_OPTIONS, SERVICE_OPTIONS } from "@/types/standupTask";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -28,9 +28,72 @@ interface ReleaseTaskRowProps {
   columnWidths: Record<string, number>;
 }
 
+const ServicesMultiSelect = ({
+  options,
+  initialSelected,
+  onCommit,
+}: {
+  options: string[];
+  initialSelected: string[];
+  onCommit: (value: string[]) => void;
+}) => {
+  const [selected, setSelected] = useState(initialSelected);
+
+  // Sync with prop if it changes externally (and not just because we committed)
+  // This is a bit tricky, but for now let's assume initialSelected is the source of truth
+  // when the dropdown is closed.
+  // Actually, we can just reset local state when the dropdown opens/closes if needed,
+  // or just keep them in sync.
+  if (JSON.stringify(initialSelected) !== JSON.stringify(selected)) {
+    // This might cause infinite loops if not careful.
+    // Better approach: use key to reset component or useEffect.
+  }
+
+  return (
+    <MultiSelect
+      options={options}
+      selected={selected}
+      onChange={setSelected}
+      placeholder="Not Started"
+      onOpenChange={(open) => {
+        if (!open) {
+          // Commit on close
+          if (JSON.stringify(selected) !== JSON.stringify(initialSelected)) {
+            onCommit(selected);
+          }
+        } else {
+          // Reset to prop value on open to ensure freshness
+          setSelected(initialSelected);
+        }
+      }}
+    />
+  );
+};
+
 export const ReleaseTaskRow = ({ task, onUpdate, onDelete, columnWidths }: ReleaseTaskRowProps) => {
+  const remarksRef = useRef<HTMLTextAreaElement>(null);
+
+  useLayoutEffect(() => {
+    if (remarksRef.current) {
+      remarksRef.current.style.height = "auto";
+      remarksRef.current.style.height = `${remarksRef.current.scrollHeight}px`;
+    }
+  }, [task.remarks]);
+
+  const [isEditingAdoId, setIsEditingAdoId] = useState(false);
   const [isEditingCrLink, setIsEditingCrLink] = useState(false);
   const [isEditingJmdbId, setIsEditingJmdbId] = useState(false);
+
+  // Local state for inputs
+  const [localAdoId, setLocalAdoId] = useState(task.adoId);
+  const [localCrLink, setLocalCrLink] = useState(task.crLink);
+  const [localJmdbId, setLocalJmdbId] = useState(task.jmdbId);
+
+  // Sync local state when task prop changes (unless editing)
+  if (!isEditingAdoId && localAdoId !== task.adoId) setLocalAdoId(task.adoId);
+  if (!isEditingCrLink && localCrLink !== task.crLink) setLocalCrLink(task.crLink);
+  if (!isEditingJmdbId && localJmdbId !== task.jmdbId) setLocalJmdbId(task.jmdbId);
+
   const [dateChangeDialog, setDateChangeDialog] = useState<{
     isOpen: boolean;
     field: keyof ReleaseTask | null;
@@ -120,6 +183,32 @@ export const ReleaseTaskRow = ({ task, onUpdate, onDelete, columnWidths }: Relea
           {/* set to zero by manas Drag Handle Column */}
           <div className="w-0 px-0 py-0 border-r border-black/20 shrink-0"></div>
 
+          {/* ADO ID */}
+          <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.adoId }}>
+            {isEditingAdoId ? (
+              <Input
+                value={localAdoId}
+                onChange={(e) => setLocalAdoId(e.target.value)}
+                onBlur={() => {
+                  setIsEditingAdoId(false);
+                  if (localAdoId !== task.adoId) {
+                    onUpdate(task.id, { adoId: localAdoId });
+                  }
+                }}
+                autoFocus
+                className="h-9 border-0 focus-visible:ring-1"
+                placeholder="ADO ID"
+              />
+            ) : (
+              <div
+                onClick={() => setIsEditingAdoId(true)}
+                className="min-h-[36px] px-3 py-2 text-sm cursor-text hover:bg-muted/50 rounded-md transition-colors"
+              >
+                {task.adoId || <span className="text-muted-foreground">ADO ID</span>}
+              </div>
+            )}
+          </div>
+
           {/* Feature / Item */}
           <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.item }}>
             <textarea
@@ -146,9 +235,14 @@ export const ReleaseTaskRow = ({ task, onUpdate, onDelete, columnWidths }: Relea
           <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.crLink }}>
             {isEditingCrLink ? (
               <Input
-                value={task.crLink}
-                onChange={(e) => onUpdate(task.id, { crLink: e.target.value })}
-                onBlur={() => setIsEditingCrLink(false)}
+                value={localCrLink}
+                onChange={(e) => setLocalCrLink(e.target.value)}
+                onBlur={() => {
+                  setIsEditingCrLink(false);
+                  if (localCrLink !== task.crLink) {
+                    onUpdate(task.id, { crLink: localCrLink });
+                  }
+                }}
                 autoFocus
                 className="h-9 border-0 focus-visible:ring-1"
                 placeholder="Enter CR link"
@@ -179,9 +273,14 @@ export const ReleaseTaskRow = ({ task, onUpdate, onDelete, columnWidths }: Relea
           <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.jmdbId }}>
             {isEditingJmdbId ? (
               <Input
-                value={task.jmdbId}
-                onChange={(e) => onUpdate(task.id, { jmdbId: e.target.value })}
-                onBlur={() => setIsEditingJmdbId(false)}
+                value={localJmdbId}
+                onChange={(e) => setLocalJmdbId(e.target.value)}
+                onBlur={() => {
+                  setIsEditingJmdbId(false);
+                  if (localJmdbId !== task.jmdbId) {
+                    onUpdate(task.id, { jmdbId: localJmdbId });
+                  }
+                }}
                 autoFocus
                 className="h-9 border-0 focus-visible:ring-1"
                 placeholder="Enter JMDB ID"
@@ -198,22 +297,22 @@ export const ReleaseTaskRow = ({ task, onUpdate, onDelete, columnWidths }: Relea
 
           {/* Services (Multi-select) */}
           <div className="px-4 py-3 shrink-0" style={{ width: columnWidths.services }}>
-            <MultiSelect
+            <ServicesMultiSelect
               options={SERVICE_OPTIONS}
-              selected={task.services}
-              onChange={(value) => onUpdate(task.id, { services: value })}
-              placeholder="Not Started"
+              initialSelected={task.services}
+              onCommit={(value) => onUpdate(task.id, { services: value })}
             />
           </div>
 
           {/* Remarks */}
           <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.remarks }}>
             <textarea
+              ref={remarksRef}
               value={task.remarks}
               onChange={(e) => onUpdate(task.id, { remarks: e.target.value })}
-              className="w-full min-h-[36px] px-3 py-2 text-sm rounded-md border-0 bg-transparent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
+              className="w-full min-h-[36px] px-3 py-2 text-sm rounded-md border-0 bg-transparent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none overflow-hidden"
               placeholder="Add remarks..."
-              rows={3}
+              rows={1}
             />
           </div>
 
