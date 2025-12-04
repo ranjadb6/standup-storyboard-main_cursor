@@ -8,11 +8,12 @@ import { MeetingNotes } from "./MeetingNotes";
 import { DashboardStats } from "./DashboardStats";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
-import { Download, Link2, PlugZap } from "lucide-react";
+import { Download, Link2, PlugZap, FileText } from "lucide-react";
 import * as XLSX from "xlsx";
 import { storageService } from "@/utils/storageService";
 import { postChangelogToAdo } from "@/utils/azureDevOps";
 import { arrayMove } from "@dnd-kit/sortable";
+import { useReactToPrint } from "react-to-print";
 
 const extractIncrementalRemark = (previous: string, next: string) => {
   if (!next) return "";
@@ -41,6 +42,7 @@ export const StandupTasksUI = () => {
   const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
   const saveTimeoutRef = useRef<number>();
   const skipNextSaveRef = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   const { planning, devQa, prod, release, rwt, meetingNotes } = standupData;
@@ -431,6 +433,38 @@ export const StandupTasksUI = () => {
     XLSX.writeFile(wb, "Standup_All_Data.xlsx");
   };
 
+  const handlePrint = useReactToPrint({
+    contentRef: containerRef,
+    documentTitle: "Standup_Storyboard",
+  });
+
+  const printStyles = `
+    @page {
+      size: A3 landscape;
+      margin: 10mm;
+    }
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+      }
+      /* Scale content to fit */
+      div[ref="containerRef"] {
+        width: 100%;
+        zoom: 0.6; /* Scale down to fit wide content */
+        overflow: visible;
+      }
+      /* Ensure tables don't overflow */
+      table {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      /* Hide scrollbars in print */
+      ::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  `;
+
   const handleConnectFile = async () => {
     setIsConnectingFile(true);
     try {
@@ -472,7 +506,8 @@ export const StandupTasksUI = () => {
   const lastSyncedLabel = lastSyncedAt ? `Last synced ${lastSyncedAt.toLocaleTimeString()}` : "Not synced yet";
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div ref={containerRef} className="min-h-screen bg-background p-6">
+      <style>{printStyles}</style>
       <div className="space-y-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -492,7 +527,7 @@ export const StandupTasksUI = () => {
                 {lastSyncedLabel}
               </Badge>
             </div>
-            <div className="flex flex-wrap gap-2 justify-end">
+            <div className="flex flex-wrap gap-2 justify-end print:hidden">
               {storageService.isFileSystemAccessSupported && (
                 fileConnection ? (
                   <Button variant="outline" className="gap-2" onClick={handleDisconnectFile}>
@@ -511,6 +546,10 @@ export const StandupTasksUI = () => {
                   </Button>
                 )
               )}
+              <Button onClick={() => handlePrint()} className="gap-2" variant="outline">
+                <FileText className="h-4 w-4" />
+                Export to PDF
+              </Button>
               <Button onClick={exportAll} className="gap-2 z-20" size="lg">
                 <Download className="h-5 w-5" />
                 Export All

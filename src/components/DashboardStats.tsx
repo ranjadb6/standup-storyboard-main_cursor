@@ -7,7 +7,7 @@ interface DashboardStatsProps {
 }
 
 export const DashboardStats = ({ data }: DashboardStatsProps) => {
-    const { planning, devQa, prod, release } = data;
+    const { planning, devQa, prod, release, rwt } = data;
 
     const stats = {
         planning: planning.filter((t) => t.status !== "Complete" && t.status !== "Removed").length,
@@ -15,10 +15,12 @@ export const DashboardStats = ({ data }: DashboardStatsProps) => {
         prodIssues: prod.filter((t) => t.status !== "Complete" && t.status !== "Removed").length,
         releaseFeatures: release.filter((t) => !t.status.includes("Released")).length,
         completedRelease: release.filter((t) => t.status.includes("Released")).length,
+        rwtPending: rwt ? rwt.filter((t) => t.status === "RWT Pending").length : 0,
+        rwtTotal: rwt ? rwt.length : 0,
     };
 
     return (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
             <Card className="bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/20 dark:to-blue-900/10 border-blue-200/50 dark:border-blue-800/50">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-300">
@@ -77,6 +79,23 @@ export const DashboardStats = ({ data }: DashboardStatsProps) => {
                     </div>
                     <p className="text-xs text-green-600/80 dark:text-green-400/80">
                         Features released
+                    </p>
+                </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-950/20 dark:to-orange-900/10 border-orange-200/50 dark:border-orange-800/50">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium text-orange-700 dark:text-orange-300">
+                        Planned RWT
+                    </CardTitle>
+                    <Activity className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold text-orange-900 dark:text-orange-100">
+                        {stats.rwtPending} <span className="text-sm font-normal text-muted-foreground">/ {stats.rwtTotal}</span>
+                    </div>
+                    <p className="text-xs text-orange-600/80 dark:text-orange-400/80">
+                        Pending RWT tasks
                     </p>
                 </CardContent>
             </Card>

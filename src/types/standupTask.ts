@@ -103,8 +103,9 @@ export const COLLABORATOR_OPTIONS = [
   "B Rajesh",
   "Manas",
   "Devaraj",
-  "Abhishek"
-
+  "Abhishek",
+  "Prashanta",
+  "Hozefa"
 ];
 
 export interface CommonTask {
