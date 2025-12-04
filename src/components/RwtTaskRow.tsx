@@ -202,7 +202,7 @@ export const RwtTaskRow = ({ task, onUpdate, onDelete, columnWidths, columnOrder
         <div className="flex hover:bg-muted/50 transition-colors py-1 group">
             <div className="flex text-sm w-full">
                 {/* Drag Handle Column */}
-                <div className="w-8 px-2 py-3 border-r border-black/20 shrink-0"></div>
+                <div className="w-0 px-0 py-0 border-r border-black/20 shrink-0"></div>
 
                 {/* Dynamic Columns */}
                 {columnOrder.map(renderCell)}
