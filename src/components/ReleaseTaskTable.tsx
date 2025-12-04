@@ -5,6 +5,8 @@ import { Button } from "./ui/button";
 import { Plus, Download, Filter } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { ResizableHeader } from "./ResizableHeader";
+import { SortableHeader } from "./SortableHeader";
+import { horizontalListSortingStrategy } from "@dnd-kit/sortable";
 import { SortableRow } from "./SortableRow";
 import {
   DndContext,
@@ -45,15 +47,20 @@ export const ReleaseTaskTable = ({
   storageKey,
   onReorder,
 }: ReleaseTaskTableProps) => {
+  // Define columns (excluding dragHandle and actions which are fixed)
+  const dataColumns = [
+    { id: "adoId", title: "ADO ID", defaultWidth: 120 },
+    { id: "item", title: "Feature", defaultWidth: 200 },
+    { id: "status", title: "Status", defaultWidth: 200 },
+    { id: "crLink", title: "CR Link", defaultWidth: 180 },
+    { id: "jmdbId", title: "JMDB ID", defaultWidth: 150 },
+    { id: "services", title: "Services", defaultWidth: 200 },
+    { id: "remarks", title: "Remarks", defaultWidth: 250 },
+    { id: "committedDate", title: "Committed Date", defaultWidth: 150 },
+  ];
+
   const defaultWidths = {
-    adoId: 120,
-    item: 200,
-    status: 200,
-    crLink: 180,
-    jmdbId: 150,
-    services: 200,
-    remarks: 250,
-    committedDate: 150,
+    ...Object.fromEntries(dataColumns.map(col => [col.id, col.defaultWidth])),
     actions: 100,
   };
 
@@ -68,6 +75,19 @@ export const ReleaseTaskTable = ({
       return { ...defaultWidths, ...parsed };
     } catch {
       return defaultWidths;
+    }
+  });
+
+  const [columnOrder, setColumnOrder] = useState<string[]>(() => {
+    if (typeof window === "undefined") {
+      return dataColumns.map(col => col.id);
+    }
+    try {
+      const stored = localStorage.getItem(`column-order-${storageKey}`);
+      if (!stored) return dataColumns.map(col => col.id);
+      return JSON.parse(stored);
+    } catch {
+      return dataColumns.map(col => col.id);
     }
   });
 
@@ -95,13 +115,27 @@ export const ReleaseTaskTable = ({
     })
   );
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleRowDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
     if (over && active.id !== over.id && onReorder) {
       const oldIndex = tasks.findIndex((task) => task.id === active.id);
       const newIndex = tasks.findIndex((task) => task.id === over.id);
       onReorder(oldIndex, newIndex);
+    }
+  };
+
+  const handleColumnDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = columnOrder.indexOf(active.id as string);
+      const newIndex = columnOrder.indexOf(over.id as string);
+      const newOrder = arrayMove(columnOrder, oldIndex, newIndex);
+      setColumnOrder(newOrder);
+      if (typeof window !== "undefined") {
+        localStorage.setItem(`column-order-${storageKey}`, JSON.stringify(newOrder));
+      }
     }
   };
 
@@ -143,26 +177,45 @@ export const ReleaseTaskTable = ({
         <div className="overflow-x-auto">
           <div className="min-w-[1200px]">
             {/* Header */}
-            <div className="flex border-b bg-muted/30 text-xs font-medium text-muted-foreground">
-              <div className="w-8 px-2 py-3 border-r border-black/20 shrink-0"></div> {/* Drag handle column */}
-              <ResizableHeader title="ADO ID" width={columnWidths.adoId} onResize={handleResize("adoId")} className="border-r border-black/20" />
-              <ResizableHeader title="Feature" width={columnWidths.item} onResize={handleResize("item")} className="border-r border-black/20" />
-              <ResizableHeader title="Status" width={columnWidths.status} onResize={handleResize("status")} className="border-r border-black/20" />
-              <ResizableHeader title="CR Link" width={columnWidths.crLink} onResize={handleResize("crLink")} className="border-r border-black/20" />
-              <ResizableHeader title="JMDB ID" width={columnWidths.jmdbId} onResize={handleResize("jmdbId")} className="border-r border-black/20" />
-              <ResizableHeader title="Services" width={columnWidths.services} onResize={handleResize("services")} className="border-r border-black/20" />
-              <ResizableHeader title="Remarks" width={columnWidths.remarks} onResize={handleResize("remarks")} className="border-r border-black/20" />
-              <ResizableHeader title="Committed Date" width={columnWidths.committedDate} onResize={handleResize("committedDate")} className="border-r border-black/20" />
-              <div className="px-4 py-3 text-sm font-semibold text-foreground text-center shrink-0" style={{ width: columnWidths.actions }}>
-                Actions
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleColumnDragEnd}
+            >
+              <div className="flex border-b bg-muted/30 text-xs font-medium text-muted-foreground">
+                <div className="w-8 px-2 py-3 border-r border-black/20 shrink-0"></div>
+
+                <SortableContext
+                  items={columnOrder}
+                  strategy={horizontalListSortingStrategy}
+                >
+                  {columnOrder.map((columnId) => {
+                    const column = dataColumns.find(col => col.id === columnId);
+                    if (!column) return null;
+                    return (
+                      <SortableHeader
+                        key={columnId}
+                        id={columnId}
+                        title={column.title}
+                        width={columnWidths[columnId as keyof typeof columnWidths]}
+                        onResize={handleResize(columnId as keyof typeof columnWidths)}
+                        className="border-r border-black/20"
+                      />
+                    );
+                  })}
+                </SortableContext>
+
+                <div className="px-4 py-3 text-sm font-semibold text-foreground text-center shrink-0" style={{ width: columnWidths.actions }}>
+                  Actions
+                </div>
               </div>
-            </div>
+            </DndContext>
 
             {/* Task Rows */}
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
+              onDragEnd={handleRowDragEnd}
             >
               <SortableContext
                 items={filteredTasks.map((t) => t.id)}
@@ -176,6 +229,7 @@ export const ReleaseTaskTable = ({
                         onUpdate={onUpdateTask}
                         onDelete={onDelete}
                         columnWidths={columnWidths}
+                        columnOrder={columnOrder}
                       />
                     </SortableRow>
                   ))}

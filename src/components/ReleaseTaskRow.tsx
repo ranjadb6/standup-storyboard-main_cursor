@@ -26,6 +26,7 @@ interface ReleaseTaskRowProps {
   onUpdate: (id: string, updates: Partial<ReleaseTask>) => void;
   onDelete: (id: string) => void;
   columnWidths: Record<string, number>;
+  columnOrder: string[];
 }
 
 const ServicesMultiSelect = ({
@@ -70,7 +71,7 @@ const ServicesMultiSelect = ({
   );
 };
 
-export const ReleaseTaskRow = ({ task, onUpdate, onDelete, columnWidths }: ReleaseTaskRowProps) => {
+export const ReleaseTaskRow = ({ task, onUpdate, onDelete, columnWidths, columnOrder }: ReleaseTaskRowProps) => {
   const itemRef = useRef<HTMLTextAreaElement>(null);
   const remarksRef = useRef<HTMLTextAreaElement>(null);
 
@@ -184,15 +185,12 @@ export const ReleaseTaskRow = ({ task, onUpdate, onDelete, columnWidths }: Relea
     </Popover>
   );
 
-  return (
-    <>
-      <div className="flex hover:bg-muted/50 transition-colors py-1 group">
-        <div className="flex text-sm w-full">
-          {/* set to zero by manas Drag Handle Column */}
-          <div className="w-0 px-0 py-0 border-r border-black/20 shrink-0"></div>
-
-          {/* ADO ID */}
-          <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.adoId }}>
+  // Helper function to render individual cells
+  const renderCell = (columnId: string) => {
+    switch (columnId) {
+      case "adoId":
+        return (
+          <div key="adoId" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.adoId }}>
             {isEditingAdoId ? (
               <Input
                 value={localAdoId}
@@ -216,9 +214,10 @@ export const ReleaseTaskRow = ({ task, onUpdate, onDelete, columnWidths }: Relea
               </div>
             )}
           </div>
-
-          {/* Feature / Item */}
-          <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.item }}>
+        );
+      case "item":
+        return (
+          <div key="item" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.item }}>
             <textarea
               ref={itemRef}
               value={task.item}
@@ -228,9 +227,10 @@ export const ReleaseTaskRow = ({ task, onUpdate, onDelete, columnWidths }: Relea
               rows={1}
             />
           </div>
-
-          {/* Status (Multi-select) */}
-          <div className="px-4 py-3 shrink-0" style={{ width: columnWidths.status }}>
+        );
+      case "status":
+        return (
+          <div key="status" className="px-4 py-3 shrink-0" style={{ width: columnWidths.status }}>
             <MultiSelect
               options={RELEASE_STATUS_OPTIONS}
               selected={task.status}
@@ -239,9 +239,10 @@ export const ReleaseTaskRow = ({ task, onUpdate, onDelete, columnWidths }: Relea
               getBadgeClassName={getStatusBadgeClassName}
             />
           </div>
-
-          {/* CR Link */}
-          <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.crLink }}>
+        );
+      case "crLink":
+        return (
+          <div key="crLink" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.crLink }}>
             {isEditingCrLink ? (
               <Input
                 value={localCrLink}
@@ -277,9 +278,10 @@ export const ReleaseTaskRow = ({ task, onUpdate, onDelete, columnWidths }: Relea
               </div>
             )}
           </div>
-
-          {/* JMDB ID */}
-          <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.jmdbId }}>
+        );
+      case "jmdbId":
+        return (
+          <div key="jmdbId" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.jmdbId }}>
             {isEditingJmdbId ? (
               <Input
                 value={localJmdbId}
@@ -303,18 +305,20 @@ export const ReleaseTaskRow = ({ task, onUpdate, onDelete, columnWidths }: Relea
               </div>
             )}
           </div>
-
-          {/* Services (Multi-select) */}
-          <div className="px-4 py-3 shrink-0" style={{ width: columnWidths.services }}>
+        );
+      case "services":
+        return (
+          <div key="services" className="px-4 py-3 shrink-0" style={{ width: columnWidths.services }}>
             <ServicesMultiSelect
               options={SERVICE_OPTIONS}
               initialSelected={task.services}
               onCommit={(value) => onUpdate(task.id, { services: value })}
             />
           </div>
-
-          {/* Remarks */}
-          <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.remarks }}>
+        );
+      case "remarks":
+        return (
+          <div key="remarks" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.remarks }}>
             <textarea
               ref={remarksRef}
               value={task.remarks}
@@ -324,11 +328,27 @@ export const ReleaseTaskRow = ({ task, onUpdate, onDelete, columnWidths }: Relea
               rows={1}
             />
           </div>
-
-          {/* Committed Date */}
-          <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.committedDate }}>
+        );
+      case "committedDate":
+        return (
+          <div key="committedDate" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.committedDate }}>
             <DatePickerButton date={task.committedDate} onDateChange={handleCommittedDateChange} placeholder="Pick committed date" />
           </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <>
+      <div className="flex hover:bg-muted/50 transition-colors py-1 group">
+        <div className="flex text-sm w-full">
+          {/* Drag Handle Column */}
+          <div className="w-0 px-0 py-0 border-r border-black/20 shrink-0"></div>
+
+          {/* Dynamic Columns */}
+          {columnOrder.map(renderCell)}
 
           {/* Actions */}
           <div className="px-4 py-3 flex items-center shrink-0" style={{ width: columnWidths.actions }}>

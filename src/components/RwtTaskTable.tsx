@@ -22,6 +22,8 @@ import { Plus, GripVertical, Download, Filter } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { RwtTaskRow } from "./RwtTaskRow";
 import { ResizableHeader } from "./ResizableHeader";
+import { SortableHeader } from "./SortableHeader";
+import { horizontalListSortingStrategy } from "@dnd-kit/sortable";
 import { cn } from "@/lib/utils";
 
 interface RwtTaskTableProps {
@@ -41,11 +43,13 @@ const SortableRow = ({
     onUpdate,
     onDelete,
     columnWidths,
+    columnOrder,
 }: {
     task: RwtTask;
     onUpdate: (id: string, updates: Partial<RwtTask>) => void;
     onDelete: (id: string) => void;
     columnWidths: Record<string, number>;
+    columnOrder: string[];
 }) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: task.id,
@@ -65,7 +69,7 @@ const SortableRow = ({
                     <GripVertical className="h-4 w-4 text-muted-foreground" />
                 </div>
                 <div className="flex-1 min-w-0">
-                    <RwtTaskRow task={task} onUpdate={onUpdate} onDelete={onDelete} columnWidths={columnWidths} />
+                    <RwtTaskRow task={task} onUpdate={onUpdate} onDelete={onDelete} columnWidths={columnWidths} columnOrder={columnOrder} />
                 </div>
             </div>
         </div>
@@ -83,17 +87,35 @@ export const RwtTaskTable = ({
     onToggleFilter,
     storageKey,
 }: RwtTaskTableProps) => {
+    // Define columns (excluding dragHandle and actions which are fixed)
+    const dataColumns = [
+        { id: "feature", title: "Features", defaultWidth: 250 },
+        { id: "status", title: "Status", defaultWidth: 150 },
+        { id: "collaborators", title: "Collaborators", defaultWidth: 200 },
+        { id: "startDate", title: "Start Date", defaultWidth: 150 },
+        { id: "endDate", title: "End Date", defaultWidth: 150 },
+        { id: "remarks", title: "Remark", defaultWidth: 250 },
+    ];
+
     const defaultWidths = {
-        feature: 250,
-        status: 150,
-        collaborators: 200,
-        startDate: 150,
-        endDate: 150,
-        remarks: 250,
+        ...Object.fromEntries(dataColumns.map(col => [col.id, col.defaultWidth])),
         actions: 100,
     };
 
     const [columnWidths, setColumnWidths] = useState(defaultWidths);
+
+    const [columnOrder, setColumnOrder] = useState<string[]>(() => {
+        if (typeof window === "undefined") {
+            return dataColumns.map(col => col.id);
+        }
+        try {
+            const stored = localStorage.getItem(`column-order-${storageKey}`);
+            if (!stored) return dataColumns.map(col => col.id);
+            return JSON.parse(stored);
+        } catch {
+            return dataColumns.map(col => col.id);
+        }
+    });
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -102,13 +124,27 @@ export const RwtTaskTable = ({
         })
     );
 
-    const handleDragEnd = (event: DragEndEvent) => {
+    const handleRowDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
 
         if (over && active.id !== over.id) {
             const oldIndex = tasks.findIndex((task) => task.id === active.id);
             const newIndex = tasks.findIndex((task) => task.id === over.id);
             onReorder(oldIndex, newIndex);
+        }
+    };
+
+    const handleColumnDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+
+        if (over && active.id !== over.id) {
+            const oldIndex = columnOrder.indexOf(active.id as string);
+            const newIndex = columnOrder.indexOf(over.id as string);
+            const newOrder = arrayMove(columnOrder, oldIndex, newIndex);
+            setColumnOrder(newOrder);
+            if (typeof window !== "undefined") {
+                localStorage.setItem(`column-order-${storageKey}`, JSON.stringify(newOrder));
+            }
         }
     };
 
@@ -172,21 +208,42 @@ export const RwtTaskTable = ({
                 <div className="overflow-x-auto">
                     <div className="min-w-[1200px]">
                         {/* Header */}
-                        <div className="flex border-b bg-muted/30 text-xs font-medium text-muted-foreground">
-                            <div className="w-8 px-2 py-3 border-r border-black/20 shrink-0"></div> {/* Drag handle column */}
-                            <ResizableHeader title="Features" width={columnWidths.feature} onResize={handleResize("feature")} className="border-r border-black/20" />
-                            <ResizableHeader title="Status" width={columnWidths.status} onResize={handleResize("status")} className="border-r border-black/20" />
-                            <ResizableHeader title="Collaborators" width={columnWidths.collaborators} onResize={handleResize("collaborators")} className="border-r border-black/20" />
-                            <ResizableHeader title="Start Date" width={columnWidths.startDate} onResize={handleResize("startDate")} className="border-r border-black/20" />
-                            <ResizableHeader title="End Date" width={columnWidths.endDate} onResize={handleResize("endDate")} className="border-r border-black/20" />
-                            <ResizableHeader title="Remark" width={columnWidths.remarks} onResize={handleResize("remarks")} className="border-r border-black/20" />
-                            <div className="px-4 py-3 shrink-0" style={{ width: columnWidths.actions }}>Actions</div>
-                        </div>
+                        <DndContext
+                            sensors={sensors}
+                            collisionDetection={closestCenter}
+                            onDragEnd={handleColumnDragEnd}
+                        >
+                            <div className="flex border-b bg-muted/30 text-xs font-medium text-muted-foreground">
+                                <div className="w-8 px-2 py-3 border-r border-black/20 shrink-0"></div>
+
+                                <SortableContext
+                                    items={columnOrder}
+                                    strategy={horizontalListSortingStrategy}
+                                >
+                                    {columnOrder.map((columnId) => {
+                                        const column = dataColumns.find(col => col.id === columnId);
+                                        if (!column) return null;
+                                        return (
+                                            <SortableHeader
+                                                key={columnId}
+                                                id={columnId}
+                                                title={column.title}
+                                                width={columnWidths[columnId as keyof typeof columnWidths]}
+                                                onResize={handleResize(columnId as keyof typeof columnWidths)}
+                                                className="border-r border-black/20"
+                                            />
+                                        );
+                                    })}
+                                </SortableContext>
+
+                                <div className="px-4 py-3 shrink-0" style={{ width: columnWidths.actions }}>Actions</div>
+                            </div>
+                        </DndContext>
 
                         <DndContext
                             sensors={sensors}
                             collisionDetection={closestCenter}
-                            onDragEnd={handleDragEnd}
+                            onDragEnd={handleRowDragEnd}
                         >
                             <SortableContext
                                 items={filteredTasks.map((t) => t.id)}
@@ -200,6 +257,7 @@ export const RwtTaskTable = ({
                                             onUpdate={onUpdateTask}
                                             onDelete={onDelete}
                                             columnWidths={columnWidths}
+                                            columnOrder={columnOrder}
                                         />
                                     ))}
                                     {filteredTasks.length === 0 && (

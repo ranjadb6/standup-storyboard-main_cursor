@@ -4,6 +4,8 @@ import { CommonTaskRow } from "./CommonTaskRow";
 import { Button } from "./ui/button";
 import { Plus, Download, Filter, Trash2, CalendarIcon, GripVertical } from "lucide-react";
 import { ResizableHeader } from "@/components/ResizableHeader";
+import { SortableHeader } from "@/components/SortableHeader";
+import { horizontalListSortingStrategy } from "@dnd-kit/sortable";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Input } from "./ui/input";
@@ -54,18 +56,23 @@ export const CommonTaskTable = ({
   storageKey,
   onReorder,
 }: CommonTaskTableProps) => {
+  // Define columns (excluding dragHandle and actions which are fixed)
+  const dataColumns = [
+    { id: "adoId", title: "ADO ID", defaultWidth: 120 },
+    { id: "taskName", title: "Task", defaultWidth: 200 },
+    { id: "status", title: "Status", defaultWidth: 180 },
+    { id: "collaborators", title: "Collaborators", defaultWidth: 180 },
+    { id: "devStartDate", title: "Dev Start", defaultWidth: 130 },
+    { id: "devDueDate", title: "Dev Due", defaultWidth: 130 },
+    { id: "qaStartDate", title: "QA Start", defaultWidth: 130 },
+    { id: "qaEndDate", title: "QA End", defaultWidth: 130 },
+    { id: "remarks", title: "Remarks", defaultWidth: 250 },
+    { id: "committedDate", title: "Committed Date", defaultWidth: 150 },
+  ];
+
   const defaultWidths = {
-    dragHandle: 0,// 32, // w-8 = 32px
-    adoId: 120,
-    taskName: 200,
-    status: 180,
-    collaborators: 180,
-    devStartDate: 130,
-    devDueDate: 130,
-    qaStartDate: 130,
-    qaEndDate: 130,
-    remarks: 250,
-    committedDate: 150,
+    dragHandle: 0,
+    ...Object.fromEntries(dataColumns.map(col => [col.id, col.defaultWidth])),
     actions: 100,
   };
 
@@ -80,6 +87,19 @@ export const CommonTaskTable = ({
       return { ...defaultWidths, ...parsed };
     } catch {
       return defaultWidths;
+    }
+  });
+
+  const [columnOrder, setColumnOrder] = useState<string[]>(() => {
+    if (typeof window === "undefined") {
+      return dataColumns.map(col => col.id);
+    }
+    try {
+      const stored = localStorage.getItem(`column-order-${storageKey}`);
+      if (!stored) return dataColumns.map(col => col.id);
+      return JSON.parse(stored);
+    } catch {
+      return dataColumns.map(col => col.id);
     }
   });
 
@@ -113,13 +133,27 @@ export const CommonTaskTable = ({
     })
   );
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleRowDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
     if (over && active.id !== over.id && onReorder) {
       const oldIndex = tasks.findIndex((task) => task.id === active.id);
       const newIndex = tasks.findIndex((task) => task.id === over.id);
       onReorder(oldIndex, newIndex);
+    }
+  };
+
+  const handleColumnDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = columnOrder.indexOf(active.id as string);
+      const newIndex = columnOrder.indexOf(over.id as string);
+      const newOrder = arrayMove(columnOrder, oldIndex, newIndex);
+      setColumnOrder(newOrder);
+      if (typeof window !== "undefined") {
+        localStorage.setItem(`column-order-${storageKey}`, JSON.stringify(newOrder));
+      }
     }
   };
 
@@ -161,36 +195,51 @@ export const CommonTaskTable = ({
         <div className="overflow-x-auto">
           <div className="min-w-[1200px]">
             {/* Header */}
-            <div className="flex border-b bg-muted/30 text-xs font-medium text-muted-foreground">
-              <ResizableHeader 
-                width={columnWidths.dragHandle}
-                onResize={handleResize("dragHandle")} 
-                className="border-r border-black/20"
-              >
-                <GripVertical className="h-4 w-4 text-muted-foreground" /> 
-                
-              </ResizableHeader>
-             
-              <ResizableHeader title="ADO ID" width={columnWidths.adoId} onResize={handleResize("adoId")} className="border-r border-black/20" />
-              <ResizableHeader title="Task" width={columnWidths.taskName} onResize={handleResize("taskName")} className="border-r border-black/20" />
-              <ResizableHeader title="Status" width={columnWidths.status} onResize={handleResize("status")} className="border-r border-black/20" />
-              <ResizableHeader title="Collaborators" width={columnWidths.collaborators} onResize={handleResize("collaborators")} className="border-r border-black/20" />
-              <ResizableHeader title="Dev Start" width={columnWidths.devStartDate} onResize={handleResize("devStartDate")} className="border-r border-black/20" />
-              <ResizableHeader title="Dev Due" width={columnWidths.devDueDate} onResize={handleResize("devDueDate")} className="border-r border-black/20" />
-              <ResizableHeader title="QA Start" width={columnWidths.qaStartDate} onResize={handleResize("qaStartDate")} className="border-r border-black/20" />
-              <ResizableHeader title="QA End" width={columnWidths.qaEndDate} onResize={handleResize("qaEndDate")} className="border-r border-black/20" />
-              <ResizableHeader title="Remarks" width={columnWidths.remarks} onResize={handleResize("remarks")} className="border-r border-black/20" />
-              <ResizableHeader title="Committed Date" width={columnWidths.committedDate} onResize={handleResize("committedDate")} className="border-r border-black/20" />
-              <div className="px-4 py-3 text-sm font-semibold text-foreground text-center shrink-0" style={{ width: columnWidths.actions }}>
-                Actions
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleColumnDragEnd}
+            >
+              <div className="flex border-b bg-muted/30 text-xs font-medium text-muted-foreground">
+                <ResizableHeader
+                  width={columnWidths.dragHandle}
+                  onResize={handleResize("dragHandle")}
+                  className="border-r border-black/20"
+                >
+                  <GripVertical className="h-4 w-4 text-muted-foreground" />
+                </ResizableHeader>
+
+                <SortableContext
+                  items={columnOrder}
+                  strategy={horizontalListSortingStrategy}
+                >
+                  {columnOrder.map((columnId) => {
+                    const column = dataColumns.find(col => col.id === columnId);
+                    if (!column) return null;
+                    return (
+                      <SortableHeader
+                        key={columnId}
+                        id={columnId}
+                        title={column.title}
+                        width={columnWidths[columnId as keyof typeof columnWidths]}
+                        onResize={handleResize(columnId as keyof typeof columnWidths)}
+                        className="border-r border-black/20"
+                      />
+                    );
+                  })}
+                </SortableContext>
+
+                <div className="px-4 py-3 text-sm font-semibold text-foreground text-center shrink-0" style={{ width: columnWidths.actions }}>
+                  Actions
+                </div>
               </div>
-            </div>
+            </DndContext>
 
             {/* Task Rows */}
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
+              onDragEnd={handleRowDragEnd}
             >
               <SortableContext
                 items={tasks.map((t) => t.id)}
@@ -204,6 +253,7 @@ export const CommonTaskTable = ({
                         onUpdate={onUpdateTask}
                         onDelete={onDelete}
                         columnWidths={columnWidths}
+                        columnOrder={columnOrder}
                       />
                     </SortableRow>
                   ))}

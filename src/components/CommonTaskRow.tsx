@@ -31,9 +31,10 @@ interface CommonTaskRowProps {
   onUpdate: (id: string, updates: Partial<CommonTask>) => void;
   onDelete: (id: string) => void;
   columnWidths: Record<string, number>;
+  columnOrder: string[];
 }
 
-export const CommonTaskRow = ({ task, onUpdate, onDelete, columnWidths }: CommonTaskRowProps) => {
+export const CommonTaskRow = ({ task, onUpdate, onDelete, columnWidths, columnOrder }: CommonTaskRowProps) => {
   const taskNameRef = useRef<HTMLTextAreaElement>(null);
   const remarksRef = useRef<HTMLTextAreaElement>(null);
 
@@ -214,21 +215,12 @@ export const CommonTaskRow = ({ task, onUpdate, onDelete, columnWidths }: Common
     </Popover>
   );
 
-  return (
-    <>
-      <div
-        className={cn(
-          "flex transition-colors py-1 group",
-          isRowCritical ? "bg-red-100/70 hover:bg-red-100/70" : "hover:bg-muted/50"
-        )}
-      >
-        <div className="flex text-sm">
-          {/* Drag Handle Column */}
-          <div className="px-0 py-0 border-r border-black/20 shrink-0" style={{ width: 0 }}>
-          </div>
-
-          {/* ADO ID */}
-          <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.adoId }}>
+  // Helper function to render individual cells
+  const renderCell = (columnId: string) => {
+    switch (columnId) {
+      case "adoId":
+        return (
+          <div key="adoId" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.adoId }}>
             <Input
               value={task.adoId}
               onChange={(e) => {
@@ -241,9 +233,10 @@ export const CommonTaskRow = ({ task, onUpdate, onDelete, columnWidths }: Common
               placeholder="Enter ADO ID"
             />
           </div>
-
-          {/* Task Name */}
-          <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.taskName }}>
+        );
+      case "taskName":
+        return (
+          <div key="taskName" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.taskName }}>
             <textarea
               ref={taskNameRef}
               value={task.taskName}
@@ -253,9 +246,10 @@ export const CommonTaskRow = ({ task, onUpdate, onDelete, columnWidths }: Common
               rows={1}
             />
           </div>
-
-          {/* Status */}
-          <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.status }}>
+        );
+      case "status":
+        return (
+          <div key="status" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.status }}>
             <Select value={task.status} onValueChange={(value) => onUpdate(task.id, { status: value as CommonTask["status"] })}>
               <SelectTrigger className="h-9 border-0 bg-transparent p-0 hover:bg-transparent focus:ring-0 shadow-none data-[placeholder]:text-muted-foreground">
                 <SelectValue asChild>
@@ -275,51 +269,57 @@ export const CommonTaskRow = ({ task, onUpdate, onDelete, columnWidths }: Common
               </SelectContent>
             </Select>
           </div>
-
-          {/* Collaborators */}
-          <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.collaborators }}>
+        );
+      case "collaborators":
+        return (
+          <div key="collaborators" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.collaborators }}>
             <MultiSelect
               options={COLLABORATOR_OPTIONS}
               selected={task.collaborators}
               onChange={(value) => onUpdate(task.id, { collaborators: value })}
             />
           </div>
-
-          {/* Dev Start Date */}
-          <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.devStartDate }}>
+        );
+      case "devStartDate":
+        return (
+          <div key="devStartDate" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.devStartDate }}>
             <DatePickerButton date={task.DevStartDate}
               onDateChange={(date) => handleDateChange("DevStartDate", date)} />
           </div>
-
-          {/* Dev Due Date */}
-          <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.devDueDate }}>
+        );
+      case "devDueDate":
+        return (
+          <div key="devDueDate" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.devDueDate }}>
             <DatePickerButton
               date={task.DevDueDate}
               onDateChange={(date) => handleDateChange("DevDueDate", date)}
               highlight={isNextWorkingDay(task.DevDueDate)}
             />
           </div>
-
-          {/* QA Start Date */}
-          <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.qaStartDate }}>
+        );
+      case "qaStartDate":
+        return (
+          <div key="qaStartDate" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.qaStartDate }}>
             <DatePickerButton
               date={task.QAStartDate}
               onDateChange={(date) => handleDateChange("QAStartDate", date)}
               highlight={isNextWorkingDay(task.QAStartDate)}
             />
           </div>
-
-          {/* QA End Date */}
-          <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.qaEndDate }}>
+        );
+      case "qaEndDate":
+        return (
+          <div key="qaEndDate" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.qaEndDate }}>
             <DatePickerButton
               date={task.QAEndDate}
               onDateChange={(date) => handleDateChange("QAEndDate", date)}
               highlight={isNextWorkingDay(task.QAEndDate)}
             />
           </div>
-
-          {/* Remarks */}
-          <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.remarks }}>
+        );
+      case "remarks":
+        return (
+          <div key="remarks" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.remarks }}>
             <textarea
               ref={remarksRef}
               value={task.remarks}
@@ -329,11 +329,33 @@ export const CommonTaskRow = ({ task, onUpdate, onDelete, columnWidths }: Common
               rows={1}
             />
           </div>
-
-          {/* Committed Date */}
-          <div className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.committedDate }}>
+        );
+      case "committedDate":
+        return (
+          <div key="committedDate" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.committedDate }}>
             <DatePickerButton date={task.committedDate} onDateChange={handleCommittedDateChange} placeholder="Pick committed date" />
           </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <>
+      <div
+        className={cn(
+          "flex transition-colors py-1 group",
+          isRowCritical ? "bg-red-100/70 hover:bg-red-100/70" : "hover:bg-muted/50"
+        )}
+      >
+        <div className="flex text-sm">
+          {/* Drag Handle Column */}
+          <div className="px-0 py-0 border-r border-black/20 shrink-0" style={{ width: 0 }}>
+          </div>
+
+          {/* Dynamic Columns */}
+          {columnOrder.map(renderCell)}
 
           {/* Actions */}
           <div className="px-4 py-3 flex items-center shrink-0" style={{ width: columnWidths.actions }}>
