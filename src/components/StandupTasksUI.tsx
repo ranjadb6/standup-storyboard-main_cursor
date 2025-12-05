@@ -506,7 +506,7 @@ export const StandupTasksUI = () => {
   const lastSyncedLabel = lastSyncedAt ? `Last synced ${lastSyncedAt.toLocaleTimeString()}` : "Not synced yet";
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-background p-6">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-6">
       <style>{printStyles}</style>
       <div className="space-y-6">
         <motion.div
