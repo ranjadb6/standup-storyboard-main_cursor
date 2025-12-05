@@ -1,4 +1,4 @@
-import { useState, useRef, useLayoutEffect } from "react";
+import { useState } from "react";
 import { ReleaseTask, RELEASE_STATUS_OPTIONS, SERVICE_OPTIONS } from "@/types/standupTask";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -9,6 +9,7 @@ import { Calendar } from "./ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { DateChangeDialog } from "./DateChangeDialog";
+import { LinkableTextarea } from "./LinkableTextarea";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -72,22 +73,7 @@ const ServicesMultiSelect = ({
 };
 
 export const ReleaseTaskRow = ({ task, onUpdate, onDelete, columnWidths, columnOrder }: ReleaseTaskRowProps) => {
-  const itemRef = useRef<HTMLTextAreaElement>(null);
-  const remarksRef = useRef<HTMLTextAreaElement>(null);
 
-  useLayoutEffect(() => {
-    if (itemRef.current) {
-      itemRef.current.style.height = "auto";
-      itemRef.current.style.height = `${itemRef.current.scrollHeight}px`;
-    }
-  }, [task.item]);
-
-  useLayoutEffect(() => {
-    if (remarksRef.current) {
-      remarksRef.current.style.height = "auto";
-      remarksRef.current.style.height = `${remarksRef.current.scrollHeight}px`;
-    }
-  }, [task.remarks]);
 
   const [isEditingAdoId, setIsEditingAdoId] = useState(false);
   const [isEditingCrLink, setIsEditingCrLink] = useState(false);
@@ -218,13 +204,10 @@ export const ReleaseTaskRow = ({ task, onUpdate, onDelete, columnWidths, columnO
       case "item":
         return (
           <div key="item" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.item }}>
-            <textarea
-              ref={itemRef}
+            <LinkableTextarea
               value={task.item}
-              onChange={(e) => onUpdate(task.id, { item: e.target.value })}
-              className="w-full min-h-[36px] px-3 py-2 text-sm rounded-md border-0 bg-transparent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none overflow-hidden"
+              onChange={(value) => onUpdate(task.id, { item: value })}
               placeholder="Enter feature name..."
-              rows={1}
             />
           </div>
         );
@@ -319,13 +302,10 @@ export const ReleaseTaskRow = ({ task, onUpdate, onDelete, columnWidths, columnO
       case "remarks":
         return (
           <div key="remarks" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.remarks }}>
-            <textarea
-              ref={remarksRef}
+            <LinkableTextarea
               value={task.remarks}
-              onChange={(e) => onUpdate(task.id, { remarks: e.target.value })}
-              className="w-full min-h-[36px] px-3 py-2 text-sm rounded-md border-0 bg-transparent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none overflow-hidden"
+              onChange={(value) => onUpdate(task.id, { remarks: value })}
               placeholder="Add remarks..."
-              rows={1}
             />
           </div>
         );

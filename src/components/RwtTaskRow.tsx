@@ -1,4 +1,4 @@
-import { useState, useRef, useLayoutEffect } from "react";
+import { useState } from "react";
 import { RwtTask, RWT_STATUS_OPTIONS, COLLABORATOR_OPTIONS } from "@/types/standupTask";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -8,6 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Calendar } from "./ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { LinkableTextarea } from "./LinkableTextarea";
 import {
     Select,
     SelectContent,
@@ -37,22 +38,7 @@ interface RwtTaskRowProps {
 }
 
 export const RwtTaskRow = ({ task, onUpdate, onDelete, columnWidths, columnOrder }: RwtTaskRowProps) => {
-    const featureRef = useRef<HTMLTextAreaElement>(null);
-    const remarksRef = useRef<HTMLTextAreaElement>(null);
 
-    useLayoutEffect(() => {
-        if (featureRef.current) {
-            featureRef.current.style.height = "auto";
-            featureRef.current.style.height = `${featureRef.current.scrollHeight}px`;
-        }
-    }, [task.feature]);
-
-    useLayoutEffect(() => {
-        if (remarksRef.current) {
-            remarksRef.current.style.height = "auto";
-            remarksRef.current.style.height = `${remarksRef.current.scrollHeight}px`;
-        }
-    }, [task.remarks]);
 
     const DatePickerButton = ({
         date,
@@ -101,13 +87,10 @@ export const RwtTaskRow = ({ task, onUpdate, onDelete, columnWidths, columnOrder
             case "feature":
                 return (
                     <div key="feature" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.feature }}>
-                        <textarea
-                            ref={featureRef}
+                        <LinkableTextarea
                             value={task.feature}
-                            onChange={(e) => onUpdate(task.id, { feature: e.target.value })}
-                            className="w-full min-h-[36px] px-3 py-2 text-sm rounded-md border-0 bg-transparent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none overflow-hidden"
+                            onChange={(value) => onUpdate(task.id, { feature: value })}
                             placeholder="Enter feature name..."
-                            rows={1}
                         />
                     </div>
                 );
@@ -183,13 +166,10 @@ export const RwtTaskRow = ({ task, onUpdate, onDelete, columnWidths, columnOrder
             case "remarks":
                 return (
                     <div key="remarks" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.remarks }}>
-                        <textarea
-                            ref={remarksRef}
+                        <LinkableTextarea
                             value={task.remarks}
-                            onChange={(e) => onUpdate(task.id, { remarks: e.target.value })}
-                            className="w-full min-h-[36px] px-3 py-2 text-sm rounded-md border-0 bg-transparent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none overflow-hidden"
+                            onChange={(value) => onUpdate(task.id, { remarks: value })}
                             placeholder="Add remarks..."
-                            rows={1}
                         />
                     </div>
                 );
