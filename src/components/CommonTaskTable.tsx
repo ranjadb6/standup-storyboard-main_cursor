@@ -118,11 +118,14 @@ export const CommonTaskTable = ({
 
   const filteredTasks = showOngoingOnly
     ? tasks.filter(
-      (task) =>
-        task.status !== "Complete" &&
-        task.status !== "Scrapped" &&
-        task.status !== "Removed" &&
-        task.status !== "Released To Prod"
+      (task) => {
+        const status = task.status.trim();
+        return (
+          status !== "Complete" &&
+          status !== "Scrapped" &&
+          status !== "Removed"
+        );
+      }
     )
     : tasks;
 
@@ -242,11 +245,11 @@ export const CommonTaskTable = ({
               onDragEnd={handleRowDragEnd}
             >
               <SortableContext
-                items={tasks.map((t) => t.id)}
+                items={filteredTasks.map((t) => t.id)}
                 strategy={verticalListSortingStrategy}
               >
                 <div className="divide-y divide-muted/20">
-                  {tasks.map((task) => (
+                  {filteredTasks.map((task) => (
                     <SortableRow key={task.id} id={task.id}>
                       <CommonTaskRow
                         task={task}
