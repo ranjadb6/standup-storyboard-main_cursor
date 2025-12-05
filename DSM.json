@@ -1,10 +1,27 @@
 {
-  "planning": [],
+  "planning": [
+    {
+      "id": "df31c519-c441-4e1a-a3a5-ac186bd9f4df",
+      "adoId": "",
+      "taskName": "<p><a href=\"https://gofynd.atlassian.net/browse/JHOC-43924\" rel=\"noopener noreferrer\" target=\"_blank\">https://gofynd.atlassian.net/browse/JHOC-43924</a></p>",
+      "status": "Not Started",
+      "collaborators": [
+        "Fynd Team",
+        "B Rajesh"
+      ],
+      "DevStartDate": "2025-11-13T18:30:00.000Z",
+      "DevDueDate": null,
+      "QAStartDate": null,
+      "QAEndDate": null,
+      "remarks": "[December 5th, 2025 3:43 PM] : Dev Start Date added as November 14th, 2025",
+      "committedDate": null
+    }
+  ],
   "devQa": [
     {
       "id": "c786ad40-9a85-45dc-879d-0511b2f91102",
       "adoId": "",
-      "taskName": "Feature 484303: JMD - ASP - Post-Invoice IMEI Validation Service\n",
+      "taskName": "<p>Feature 484303: JMD - ASP - Post-Invoice IMEI Validation Service</p>",
       "status": "QA In Progress",
       "collaborators": [
         "Kamlesh",
@@ -22,24 +39,24 @@
     {
       "id": "8695302a-830b-4d4b-a94f-8dc6675a5dd4",
       "adoId": "",
-      "taskName": "Feature 484068: JMD - ASP/B2B - Creating Manual Return on a Delivered Item",
+      "taskName": "<p>Feature 484068: JMD - ASP/B2B - Creating Manual Return on a Delivered Item</p>",
       "status": "Dev in Progress",
       "collaborators": [
         "Malati",
         "Prasoon"
       ],
-      "DevStartDate": null,
+      "DevStartDate": "2025-12-04T18:30:00.000Z",
       "DevDueDate": "2025-12-09T18:30:00.000Z",
       "QAStartDate": "2025-12-10T18:30:00.000Z",
       "QAEndDate": "2025-12-18T18:30:00.000Z",
-      "remarks": "\nDev delay of 1.5 days due to OrderID prod issue fix in Hogwarts  hence adding 1.5 days from Dec-8 to 10-Dec timeline and moving others accordingly\n———————————————————————————————\n26-Nov:\nBE completion - 5th Dec\nFE Completion - 5th Dec\nIntegration Testing - 1 day - 8th Dec\nQA - 1+6 days - post SWT evaluation\n——————————————————————————-\nBE completion - 5th Dec\nFE Completion - DFD 25th Nov\nIntegration Testing - 1 day - 8th Dec\nQA - 1+6 days - post SWT evaluation\n\n\n\nBall Park estimation . Will confirm once Shruti reviews SWT -DTD 26-Nov\n[December 2nd, 2025 4:23 PM] : Committed Date added as December 24th, 2025\n[December 2nd, 2025 4:22 PM] : Q A End Date added as December 19th, 2025\n[December 2nd, 2025 4:22 PM] : Q A Start Date added as December 11th, 2025\n[December 2nd, 2025 4:22 PM] : Dev Due Date added as December 10th, 2025",
+      "remarks": "[December 5th, 2025 3:40 PM] : Dev Start Date changes from December 4th, 2025 to December 5th, 2025 due to Reason : test\n[December 5th, 2025 3:40 PM] : Dev Start Date added as December 4th, 2025\n\nDev delay of 1.5 days due to OrderID prod issue fix in Hogwarts  hence adding 1.5 days from Dec-8 to 10-Dec timeline and moving others accordingly\n———————————————————————————————\n26-Nov:\nBE completion - 5th Dec\nFE Completion - 5th Dec\nIntegration Testing - 1 day - 8th Dec\nQA - 1+6 days - post SWT evaluation\n——————————————————————————-\nBE completion - 5th Dec\nFE Completion - DFD 25th Nov\nIntegration Testing - 1 day - 8th Dec\nQA - 1+6 days - post SWT evaluation\n\n\n\nBall Park estimation . Will confirm once Shruti reviews SWT -DTD 26-Nov\n[December 2nd, 2025 4:23 PM] : Committed Date added as December 24th, 2025\n[December 2nd, 2025 4:22 PM] : Q A End Date added as December 19th, 2025\n[December 2nd, 2025 4:22 PM] : Q A Start Date added as December 11th, 2025\n[December 2nd, 2025 4:22 PM] : Dev Due Date added as December 10th, 2025",
       "committedDate": "2025-12-23T18:30:00.000Z"
     },
     {
       "id": "01fe04d1-3454-490c-9e0b-5b6b9ee57d3b",
       "adoId": "",
       "taskName": "Feature 201058: DMS - JMD - Enable MOQ at Cart level",
-      "status": "QA Complete",
+      "status": "Released To Prod",
       "collaborators": [
         "Rhishabh",
         "Devaraj"
@@ -50,35 +67,68 @@
       "QAEndDate": "2025-12-02T18:30:00.000Z",
       "remarks": "\n———————————————————————————————\nDue to Supercoin release MOQ QA demo will be done on 26th Nov but QA can start from 27th Nov instead of 26 Nov so QA due date will be 1-Dec instead of 28-Nov\n\nQA Demo scheduled at 11:30 26th Sept among QA,SRE and Tops\n\nQA demo to be scheduled on 26th 1st half\nDue to supercoin/onboarding  changes FE end date for MOQ will from 20th Nov- 25th Nov\n\n@Rhishabh in meantime will work on alerts for cronjobs.\n\nBased on the discussion with Suresh2 Iyer regarding the approach for Category level MOQ, we will proceed with the Sorting and grouping approach. Pls find the estimate\nstart and end Date -  18th - 21th  \n\nNov - Devraj   - BE is completed - Integration is pending \nSWT 31-Oct 2nd half \nRhisshabh will update 28-Oct for due date\n[December 2nd, 2025 4:25 PM] : Committed Date added as December 4th, 2025\n[December 2nd, 2025 4:25 PM] : Q A End Date added as December 3rd, 2025\n[December 2nd, 2025 4:25 PM] : Q A Start Date added as December 1st, 2025\n[December 2nd, 2025 4:25 PM] : Dev Due Date added as November 27th, 2025\n[December 2nd, 2025 4:25 PM] : Dev Start Date added as November 25th, 2025",
       "committedDate": "2025-12-03T18:30:00.000Z"
-    },
-    {
-      "id": "b04acd1c-179a-4f41-a4a5-395d6b80446d",
-      "adoId": "484286",
-      "taskName": "<p><a href=\"https://dev.azure.com/JPL-JioMart/Retailer%20and%20Distribution%20Platform/_workitems/edit/484303\" rel=\"noopener noreferrer\" target=\"_blank\">Feature 484303</a>: JMD - ASP - Post-Invoice IMEI Validation Servicetest</p>",
-      "status": "Not Started",
-      "collaborators": [
-        "Manas"
-      ],
-      "DevStartDate": "2025-12-02T18:30:00.000Z",
-      "DevDueDate": "2025-12-03T18:30:00.000Z",
-      "QAStartDate": null,
-      "QAEndDate": null,
-      "remarks": "[December 3rd, 2025 1:18 PM] : Dev Due Date added as December 4th, 2025\n[December 3rd, 2025 1:18 PM] : Dev Start Date added as December 3rd, 2025",
-      "committedDate": null
     }
   ],
   "prod": [
     {
-      "id": "97765241-74cd-40f3-b10c-2feb1e543b2a",
+      "id": "3184e6b3-ff9c-47de-94b5-b7cca747b9b1",
       "adoId": "",
-      "taskName": "<p><a href=\"https://dev.azure.com/JPL-JioMart/Retailer%20and%20Distribution%20Platform/_workitems/edit/484303\" rel=\"noopener noreferrer\" target=\"_blank\">Feature 484303</a>: JMD - ASP - Post-Invoice IMEI Validation Service</p>",
-      "status": "Not Started",
-      "collaborators": [],
+      "taskName": "<p><a href=\"https://dev.azure.com/JPL-JioMart/Retailer%20and%20Distribution%20Platform/_workitems/edit/478856\" rel=\"noopener noreferrer\" target=\"_blank\">Production Issue 478856</a>: Updated Retailer Onboarding Table Usage</p>",
+      "status": "Dev in Progress",
+      "collaborators": [
+        "Ganapati"
+      ],
+      "DevStartDate": null,
+      "DevDueDate": null,
+      "QAStartDate": null,
+      "QAEndDate": null,
+      "remarks": "<p>Need to discuss with Suraj with Ganapati and we will decide the further course of action - 27th Nov ——————————————————————————- 26-Nov- Need to be priortised by Navneet and Dama. Based on Suraj start date will be decided Need to discuss with Suraj before starting Dev investigation is on ( Post Suraj's confirmation) - Post super coin bug fixes&nbsp;</p>",
+      "committedDate": null
+    },
+    {
+      "id": "f82b2eec-d94f-40d5-92cd-97fabd912a54",
+      "adoId": "",
+      "taskName": "<p><a href=\"https://dev.azure.com/JPL-JioMart/Retailer%20and%20Distribution%20Platform/_workitems/edit/478347\" rel=\"noopener noreferrer\" target=\"_blank\">Production Issue 478347</a>: Reading Inactive Users from HRMS</p>",
+      "status": "Dev in Progress",
+      "collaborators": [
+        "Ganapati"
+      ],
+      "DevStartDate": null,
+      "DevDueDate": null,
+      "QAStartDate": null,
+      "QAEndDate": null,
+      "remarks": "<p>Confirmation from HRMS team not received . Based on their input and </p><p><br></p><p><a href=\"https://www.notion.so/Ganapati-29303aab2bf38038a906db83ec732ac7?pvs=24\" rel=\"noopener noreferrer\" target=\"_blank\">Ganapati</a> ‘s availability from 24th Nov only .. Release can be done after 24-Nov Will be released post demo with QA and Product is done - ETA 14-Nov To be hand over to QA on 12-Nov eod Need to discuss with Central HRMS along with Hozefa Ganapati to pick post 478855 &amp; 478856 are done</p>",
+      "committedDate": null
+    },
+    {
+      "id": "16cdf381-6c45-4b66-85ee-db760b47e5d3",
+      "adoId": "",
+      "taskName": "<p>DMS - Brand whitelisting is getting 4 brands</p>",
+      "status": "Deprioritised",
+      "collaborators": [
+        "Amrit",
+        "Suresh"
+      ],
       "DevStartDate": null,
       "DevDueDate": null,
       "QAStartDate": null,
       "QAEndDate": null,
       "remarks": "",
+      "committedDate": null
+    },
+    {
+      "id": "22d242b6-e726-45f7-ab79-407c297bfd29",
+      "adoId": "",
+      "taskName": "<p><a href=\"https://dev.azure.com/JPL-JioMart/Retailer%20and%20Distribution%20Platform/_workitems/edit/481701\" rel=\"noopener noreferrer\" target=\"_blank\">Task 481701</a>: Lat Long Update in FFA DB</p>",
+      "status": "Dev in Progress",
+      "collaborators": [
+        "Ganapati"
+      ],
+      "DevStartDate": null,
+      "DevDueDate": null,
+      "QAStartDate": null,
+      "QAEndDate": null,
+      "remarks": "<p>Recurring activity . As and when it comes this task will be performed.</p>",
       "committedDate": null
     }
   ],
@@ -88,8 +138,7 @@
       "adoId": "",
       "item": "Feature 201058: DMS - JMD - Enable MOQ at Cart level",
       "status": [
-        "CAB Review Pending",
-        "SRE Pending"
+        "Released"
       ],
       "crLink": "Change Request 242232: Feature 201058: DMS - JMD - Enable MOQ at Cart level",
       "jmdbId": "JMDB-1025",
@@ -98,6 +147,22 @@
       ],
       "remarks": "[December 2nd, 2025 4:36 PM] : Committed Date added as December 3rd, 2025",
       "committedDate": "2025-12-02T18:30:00.000Z"
+    },
+    {
+      "id": "b6766db3-f096-42b5-ad08-ad64df2bb6f6",
+      "adoId": "",
+      "item": "<p><span style=\"color: rgb(29, 37, 48);\">Feature 484303: JMD - ASP - Post-Invoice IMEI Validation Service</span></p>",
+      "status": [
+        "SRE Done",
+        "CAB Review Pending"
+      ],
+      "crLink": "",
+      "jmdbId": "",
+      "services": [
+        "taxman"
+      ],
+      "remarks": "",
+      "committedDate": null
     }
   ],
   "rwt": [

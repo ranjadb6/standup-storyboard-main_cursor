@@ -56,7 +56,7 @@ const ServicesMultiSelect = ({
       options={options}
       selected={selected}
       onChange={setSelected}
-      placeholder="Not Started"
+      placeholder="No Service"
       onOpenChange={(open) => {
         if (!open) {
           // Commit on close
