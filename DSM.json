@@ -16,7 +16,7 @@
       "DevDueDate": "2025-11-30T18:30:00.000Z",
       "QAStartDate": "2025-12-01T18:30:00.000Z",
       "QAEndDate": "2025-12-08T18:30:00.000Z",
-      "remarks": "[December 3rd, 2025 2:41 PM] : Committed date changed from December 10th, 2025 to December 11th, 2025 with Reason : test\n2nd Dec:\nQA will start on 2nd Dec.\nPub-Sub Enhancement - SRE suggestion - Kamlesh \nProduction Infra for this feature - Kamlesh/Suraj/Soumyajit\n\na.Report to be created for success and failure - Sunderrajan\n\nb.File upload experience - Sunder / Kamlesh/ Suresh ( pr-1)- folder will be created and access will be given to business to CSV upload\n”IMEI validation” is name of folder\n———————————————————————————————\n28-Nov\nWe will focus on 1-Dec 2nd half for QA demo date. QA completion is 9th-Dec.  so we will release on Dec 10th if no blockers. \n——————————————————————————————\n27-Nov:\n1. Changed the timelines advanced by 1 day [subjected to change if further delay happens] due to delay in data readiness.\n2. JioOnePay staus polling call implementation - Kamlesh to give input - estimations awaited\n\nPending 26-Nov:\n\n1. Sundarrajan M please share the ETA for  query optimisation\n2. Kamlesh Mathe is verifying the payload and validating the e2e to figure out how much QA support needed ,hence QA meeting is re-scheduled for tomorrow 11AM. \n3. No messages in Topic Sundarrajan M please check without this #2 will be blocked .\n\n    1. \n\nPending items (25-Nov)→\n1.transactionRefNum - ?? backup - Sunderrajan will get data and it will be checked. ETA - 25th Nov \n2. Sunderrajan - IMEI validation response Pub/Sub topic  ETA 25th Nov\n3.  Suresh for Production env  - \nPineLabs:\n• merchant-id\n• merchant-access-code\nJioOnePay:\n• secret\n• merchant-id\n• business-flow\n\n4.Manas to discuss with Soumyajit to give access to  Navneet Shruti and dama  Kamlesh - DONE - 25th Nov\n\nEstimate : Dev 5 days , QA 6 days\n[December 2nd, 2025 4:15 PM] : Committed Date added as December 10th, 2025\n[December 2nd, 2025 4:14 PM] : Q A End Date added as December 9th, 2025\n[December 2nd, 2025 4:13 PM] : Q A Start Date added as December 2nd, 2025\n[December 2nd, 2025 4:13 PM] : Dev Due Date added as December 1st, 2025\n[December 2nd, 2025 4:13 PM] : Dev Start Date added as November 21st, 2025",
+      "remarks": "05-Dec\n\nhttps://gofynd.atlassian.net/browse/JHOC-44994 will be blocker for IMEI validation as orders will not be placed\n\n==========================================\n[December 3rd, 2025 2:41 PM] : Committed date changed from December 10th, 2025 to December 11th, 2025 with Reason : test\n2nd Dec:\nQA will start on 2nd Dec.\nPub-Sub Enhancement - SRE suggestion - Kamlesh \nProduction Infra for this feature - Kamlesh/Suraj/Soumyajit\n\na.Report to be created for success and failure - Sunderrajan\n\nb.File upload experience - Sunder / Kamlesh/ Suresh ( pr-1)- folder will be created and access will be given to business to CSV upload\n”IMEI validation” is name of folder\n———————————————————————————————\n28-Nov\nWe will focus on 1-Dec 2nd half for QA demo date. QA completion is 9th-Dec.  so we will release on Dec 10th if no blockers. \n——————————————————————————————\n27-Nov:\n1. Changed the timelines advanced by 1 day [subjected to change if further delay happens] due to delay in data readiness.\n2. JioOnePay staus polling call implementation - Kamlesh to give input - estimations awaited\n\nPending 26-Nov:\n\n1. Sundarrajan M please share the ETA for  query optimisation\n2. Kamlesh Mathe is verifying the payload and validating the e2e to figure out how much QA support needed ,hence QA meeting is re-scheduled for tomorrow 11AM. \n3. No messages in Topic Sundarrajan M please check without this #2 will be blocked .\n\n    1. \n\nPending items (25-Nov)→\n1.transactionRefNum - ?? backup - Sunderrajan will get data and it will be checked. ETA - 25th Nov \n2. Sunderrajan - IMEI validation response Pub/Sub topic  ETA 25th Nov\n3.  Suresh for Production env  - \nPineLabs:\n• merchant-id\n• merchant-access-code\nJioOnePay:\n• secret\n• merchant-id\n• business-flow\n\n4.Manas to discuss with Soumyajit to give access to  Navneet Shruti and dama  Kamlesh - DONE - 25th Nov\n\nEstimate : Dev 5 days , QA 6 days\n[December 2nd, 2025 4:15 PM] : Committed Date added as December 10th, 2025\n[December 2nd, 2025 4:14 PM] : Q A End Date added as December 9th, 2025\n[December 2nd, 2025 4:13 PM] : Q A Start Date added as December 2nd, 2025\n[December 2nd, 2025 4:13 PM] : Dev Due Date added as December 1st, 2025\n[December 2nd, 2025 4:13 PM] : Dev Start Date added as November 21st, 2025",
       "committedDate": "2025-12-10T18:30:00.000Z"
     },
     {
@@ -54,7 +54,7 @@
     {
       "id": "b04acd1c-179a-4f41-a4a5-395d6b80446d",
       "adoId": "484286",
-      "taskName": "1\n1\n\n1\n1\n\n11\n1\n1\n",
+      "taskName": "<p><a href=\"https://dev.azure.com/JPL-JioMart/Retailer%20and%20Distribution%20Platform/_workitems/edit/484303\" rel=\"noopener noreferrer\" target=\"_blank\">Feature 484303</a>: JMD - ASP - Post-Invoice IMEI Validation Servicetest</p>",
       "status": "Not Started",
       "collaborators": [
         "Manas"
@@ -71,7 +71,7 @@
     {
       "id": "97765241-74cd-40f3-b10c-2feb1e543b2a",
       "adoId": "",
-      "taskName": "",
+      "taskName": "<p><a href=\"https://dev.azure.com/JPL-JioMart/Retailer%20and%20Distribution%20Platform/_workitems/edit/484303\" rel=\"noopener noreferrer\" target=\"_blank\">Feature 484303</a>: JMD - ASP - Post-Invoice IMEI Validation Service</p>",
       "status": "Not Started",
       "collaborators": [],
       "DevStartDate": null,
@@ -108,8 +108,19 @@
       "collaborators": [
         "Prashanta"
       ],
-      "startDate": "2025-12-02T18:30:00.000Z",
+      "startDate": "2025-12-07T18:30:00.000Z",
       "endDate": "2025-12-02T18:30:00.000Z",
+      "remarks": ""
+    },
+    {
+      "id": "03e1209c-f8bf-4a61-b1a9-8eee5dd12a85",
+      "feature": "Feature 198123: JMD B2B - Wallet Credit using Interface",
+      "status": "RWT Pending",
+      "collaborators": [
+        "Vicky"
+      ],
+      "startDate": "2025-12-08T18:30:00.000Z",
+      "endDate": null,
       "remarks": ""
     }
   ],

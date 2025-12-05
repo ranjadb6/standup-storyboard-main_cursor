@@ -1,4 +1,4 @@
-import { useState, useRef, useLayoutEffect } from "react";
+import { useState } from "react";
 import { CommonTask, COMMON_STATUS_OPTIONS, COLLABORATOR_OPTIONS } from "@/types/standupTask";
 import { Badge } from "./ui/badge";
 import { Input } from "./ui/input";
@@ -10,6 +10,7 @@ import { CalendarIcon, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { DateChangeDialog } from "./DateChangeDialog";
+import { LinkableTextarea } from "./LinkableTextarea";
 import { MultiSelect } from "./MultiSelect";
 import {
   AlertDialog,
@@ -35,22 +36,7 @@ interface CommonTaskRowProps {
 }
 
 export const CommonTaskRow = ({ task, onUpdate, onDelete, columnWidths, columnOrder }: CommonTaskRowProps) => {
-  const taskNameRef = useRef<HTMLTextAreaElement>(null);
-  const remarksRef = useRef<HTMLTextAreaElement>(null);
 
-  useLayoutEffect(() => {
-    if (taskNameRef.current) {
-      taskNameRef.current.style.height = "auto";
-      taskNameRef.current.style.height = `${taskNameRef.current.scrollHeight}px`;
-    }
-  }, [task.taskName]);
-
-  useLayoutEffect(() => {
-    if (remarksRef.current) {
-      remarksRef.current.style.height = "auto";
-      remarksRef.current.style.height = `${remarksRef.current.scrollHeight}px`;
-    }
-  }, [task.remarks]);
 
   const [dateChangeDialog, setDateChangeDialog] = useState<{
     isOpen: boolean;
@@ -237,13 +223,10 @@ export const CommonTaskRow = ({ task, onUpdate, onDelete, columnWidths, columnOr
       case "taskName":
         return (
           <div key="taskName" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.taskName }}>
-            <textarea
-              ref={taskNameRef}
+            <LinkableTextarea
               value={task.taskName}
-              onChange={(e) => onUpdate(task.id, { taskName: e.target.value })}
-              className="w-full min-h-[36px] px-3 py-2 text-sm rounded-md border-0 bg-transparent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none overflow-hidden"
+              onChange={(value) => onUpdate(task.id, { taskName: value })}
               placeholder="Enter task name..."
-              rows={1}
             />
           </div>
         );
@@ -320,13 +303,10 @@ export const CommonTaskRow = ({ task, onUpdate, onDelete, columnWidths, columnOr
       case "remarks":
         return (
           <div key="remarks" className="px-4 py-3 border-r border-black/20 shrink-0" style={{ width: columnWidths.remarks }}>
-            <textarea
-              ref={remarksRef}
+            <LinkableTextarea
               value={task.remarks}
-              onChange={(e) => onUpdate(task.id, { remarks: e.target.value })}
-              className="w-full min-h-[36px] px-3 py-2 text-sm rounded-md border-0 bg-transparent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none overflow-hidden"
+              onChange={(value) => onUpdate(task.id, { remarks: value })}
               placeholder="Add remarks..."
-              rows={1}
             />
           </div>
         );
