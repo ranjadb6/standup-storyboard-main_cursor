@@ -14,6 +14,7 @@ import { storageService } from "@/utils/storageService";
 import { postChangelogToAdo } from "@/utils/azureDevOps";
 import { arrayMove } from "@dnd-kit/sortable";
 import { useReactToPrint } from "react-to-print";
+import { format } from "date-fns";
 
 const extractIncrementalRemark = (previous: string, next: string) => {
   if (!next) return "";
@@ -25,6 +26,16 @@ const extractIncrementalRemark = (previous: string, next: string) => {
   }
   return next.trim();
 };
+
+const appendStatusChangeLog = (currentRemarks: string, oldStatus: string, newStatus: string) => {
+  const timestamp = format(new Date(), "dd-MMM-yy HH:mm");
+
+  const logMessage = `<${timestamp}> status changed from "${oldStatus}" to "${newStatus}"`;
+
+  if (!currentRemarks) return logMessage;
+  return `${logMessage}\n${currentRemarks}`;
+};
+
 import { useToast } from "@/hooks/use-toast";
 
 export const StandupTasksUI = () => {
@@ -128,7 +139,17 @@ export const StandupTasksUI = () => {
         ...prev,
         [section]: prev[section].map((task) => {
           if (task.id !== id) return task;
-          const updatedTask = { ...task, ...updates };
+
+          let updatedTask = { ...task, ...updates };
+
+          // Handle status change logging
+          if ("status" in updates && updates.status !== undefined && updates.status !== task.status) {
+            updatedTask.remarks = appendStatusChangeLog(
+              updatedTask.remarks,
+              task.status,
+              updates.status
+            );
+          }
 
           if ("remarks" in updates && updates.remarks !== undefined && updatedTask.adoId) {
             const incremental = extractIncrementalRemark(task.remarks ?? "", updates.remarks ?? "");
@@ -209,7 +230,22 @@ export const StandupTasksUI = () => {
       const task = prev.release.find((t) => t.id === id);
       if (!task) return prev;
 
-      const updatedTask = { ...task, ...updates };
+      let updatedTask = { ...task, ...updates };
+
+      // Handle status change logging
+      if ("status" in updates && updates.status !== undefined) {
+        const oldStatus = task.status.length > 0 ? task.status.join(", ") : "Not Started";
+        const newStatus = updates.status.length > 0 ? updates.status.join(", ") : "Not Started";
+
+        if (oldStatus !== newStatus) {
+          updatedTask.remarks = appendStatusChangeLog(
+            updatedTask.remarks,
+            oldStatus,
+            newStatus
+          );
+        }
+      }
+
       const adoId = updatedTask.adoId;
 
       if (adoId) {
@@ -273,7 +309,22 @@ export const StandupTasksUI = () => {
   const updateRwtTask = (id: string, updates: Partial<RwtTask>) => {
     setStandupData((prev) => ({
       ...prev,
-      rwt: prev.rwt.map((task) => (task.id === id ? { ...task, ...updates } : task)),
+      rwt: prev.rwt.map((task) => {
+        if (task.id !== id) return task;
+
+        let updatedTask = { ...task, ...updates };
+
+        // Handle status change logging
+        if ("status" in updates && updates.status !== undefined && updates.status !== task.status) {
+          updatedTask.remarks = appendStatusChangeLog(
+            updatedTask.remarks,
+            task.status,
+            updates.status
+          );
+        }
+
+        return updatedTask;
+      }),
     }));
   };
 
