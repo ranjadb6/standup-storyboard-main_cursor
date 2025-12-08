@@ -46,8 +46,8 @@ export const LinkableTextarea = ({
     const renderContent = (content: string) => {
         if (!content) return <span className="text-muted-foreground">{placeholder}</span>;
 
-        // Check if content is HTML (starts with <p, <div, <span, etc.)
-        const isHtml = /^\s*<[a-z][\s\S]*>/i.test(content);
+        // Check if content contains any HTML tags
+        const isHtml = /<[a-z]+\b[^>]*>/i.test(content);
 
         if (isHtml) {
             return (
