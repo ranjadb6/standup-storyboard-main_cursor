@@ -37,8 +37,10 @@ const appendStatusChangeLog = (currentRemarks: string, oldStatus: string, newSta
 };
 
 import { useToast } from "@/hooks/use-toast";
+import { useConfirmLeave } from "@/hooks/useConfirmLeave";
 
 export const StandupTasksUI = () => {
+  useConfirmLeave();
   const [standupData, setStandupData] = useState<StandupData>(EMPTY_STANDUP_DATA);
   const [filters, setFilters] = useState({
     planning: true,
